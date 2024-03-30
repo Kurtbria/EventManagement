@@ -9,26 +9,26 @@
 </head>
 <body>
     <style>
-        /* Style for the anchor tags */
+        
         .payment-option-link {
-            display: inline-block; /* Ensure anchor tags behave like inline elements */
-            text-decoration: none; /* Remove default underline */
-            margin: 5px; /* Add spacing between buttons */
+            display: inline-block; 
+            text-decoration: none;
+            margin: 5px; 
         }
     
-        /* Style for the buttons */
+     
         .payment-option {
-            display: block; /* Ensure buttons behave like block elements */
-            padding: 10px 20px; /* Adjust padding as needed */
-            background-color: #007bff; /* Example background color */
-            color: #fff; /* Example text color */
-            border: none; /* Remove default button border */
-            border-radius: 5px; /* Add border radius for rounded corners */
-            cursor: pointer; /* Show pointer cursor on hover */
+            display: block; 
+            padding: 10px 20px; 
+            background-color: #007bff; 
+            color: #fff; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
         }
     </style>
 <header>
-    <h1>Buy Tickets</h1>
+    <h1></h1>
 </header>
 
 <main class="container">
@@ -61,8 +61,8 @@
                     <button type="button" class="payment-option" value="paypal">PayPal</button>
                 </a>
                 
-                <a href="#" class="payment-option-link" onclick="submitForm('bankTransfer')">
-                    <button type="button" class="payment-option" value="bankTransfer">Bank Transfer</button>
+                <a href="initiate_payment" class="payment-option-link" onclick="submitForm('bankTransfer')">
+                    <button type="button" class="payment-option" value="bankTransfer">MPESA Transfer</button>
                 </a>
                 
             </div>

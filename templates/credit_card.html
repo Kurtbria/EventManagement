@@ -3,7 +3,7 @@
         margin: 0;
         padding: 0;
         font-family: Arial, sans-serif;
-        background-color: #f0f0f0; /* Background color */
+        background-color: #f0f0f0; 
         display: flex;
         justify-content: center;
         align-items: center;
@@ -11,7 +11,7 @@
     }
     
     form {
-        background-color: #fff; /* Form background color */
+        background-color: #fff; 
         padding: 20px;
         border-radius: 10px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -28,18 +28,18 @@
     
     #card-element {
         padding: 10px;
-        border: 1px solid #ccc; /* Border color */
+        border: 1px solid #ccc; 
         border-radius: 5px;
     }
     
     #card-errors {
-        color: #dc3545; /* Error text color */
+        color: #dc3545; 
         margin-top: 10px;
     }
     
     #submit {
-        background-color: #007bff; /* Button background color */
-        color: #fff; /* Button text color */
+        background-color: #007bff; 
+        color: #fff; 
         border: none;
         border-radius: 5px;
         padding: 10px 20px;
@@ -49,7 +49,7 @@
     }
     
     #submit:hover {
-        background-color: #0056b3; /* Button hover background color */
+        background-color: #0056b3; 
     }
     
 </style>
@@ -63,6 +63,12 @@
 
 <form action="{% url 'charge' %}" method="post" id="payment-form">
     {% csrf_token %}
+    <label for="card-element">
+      Email Address
+    </label>
+    <div class="form-row">
+      <input type="email" id="email" name="email"required><br>
+    </div>
     <div class="form-row">
       <label for="card-element">
         Credit or debit card

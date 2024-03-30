@@ -12,9 +12,33 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
-from paypal.standard.forms import PayPalPaymentsForm
+#from paypal.standard.forms import PayPalPaymentsForm
+import requests
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.urls import reverse
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
+
+
+# M-Pesa API credentials
+CONSUMER_KEY = '7fVgJmnP7q62V1aFl0SzCAi5h1b6fegj29bP0dPpSlyR6AuI'
+CONSUMER_SECRET = 'GivlXkJxFJ2LvR8LGiLivXEkaJ8SPdhBHbO3zJkMvdrzUfxr8exxv1MkJBhgdQ4A'
+SHORTCODE = 'your_shortcode'
+PASSKEY = 'your_passkey'
+INITIATE_URL = 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest'
+# Use the sandbox URL for testing. Change it to the production URL when deploying to production.
+
+
+url = reverse('initiate_payment')
+data = {
+    'phone_number': '+254719575272',
+    'amount': '5'
+}
+
+response = requests.post(url, data=data)
+print(response.json())
+
 
 def signup(request):
     if request.method == 'POST':
@@ -115,7 +139,7 @@ def my_view(request):
 
     return render(request, 'my_template.html', context)
 
-def payment_process(request):
+'''def payment_process(request):
     paypal_dict = {
         'business': settings.PAYPAL_RECEIVER_EMAIL,
         'amount': '10.00',
@@ -135,4 +159,57 @@ def payment_success(request):
 
 @csrf_exempt
 def payment_cancel(request):
-    return HttpResponse("Payment Canceled")
+    return HttpResponse("Payment Canceled")'''
+
+@csrf_exempt
+def initiate_payment(request):
+    if request.method == 'POST':
+        phone_number = request.POST.get('phone_number')
+        amount = request.POST.get('amount')
+
+        payload = {
+            "BusinessShortCode": SHORTCODE,
+            "Password": PASSKEY,
+            "Timestamp": "yyyyMMddHHmmss",
+            "TransactionType": "CustomerPayBillOnline",
+            "Amount": amount,
+            "PartyA": phone_number,
+            "PartyB": SHORTCODE,
+            "PhoneNumber": +254719575272,
+            "CallBackURL": "callback/",
+            "AccountReference": "Test",
+            "TransactionDesc": "Test Payment"
+        }
+
+        headers = {
+            'Authorization': 'Bearer {}'.format(get_access_token()),
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.post(INITIATE_URL, json=payload, headers=headers)
+        data = response.json()
+        
+        # Process response and return appropriate JSON response
+        return JsonResponse(data)
+
+    return JsonResponse({"error": "Only POST requests are allowed"})
+
+def get_access_token():
+    url = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials'
+
+    response = requests.get(url, auth=(CONSUMER_KEY, CONSUMER_SECRET))
+    data = response.json()
+
+    access_token = data.get('access_token')
+    return access_token
+
+@csrf_exempt
+def callback(request):
+    if request.method == 'POST':
+        # Process M-Pesa callback notification
+        # Update transaction status in your database
+        # You can use a background task processing library like Celery to handle this asynchronously
+        # Respond to Safaricom server with HTTP status 200 to acknowledge receipt of the notification
+        return JsonResponse({"success": True})
+
+    return JsonResponse({"error": "Only POST requests are allowed"})
