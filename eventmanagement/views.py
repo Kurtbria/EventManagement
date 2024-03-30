@@ -2,6 +2,7 @@ import stripe
 import requests
 import random
 import string
+import io
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
@@ -11,6 +12,7 @@ from django.conf import settings
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse
+from PIL import Image, ImageDraw, ImageFont
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 

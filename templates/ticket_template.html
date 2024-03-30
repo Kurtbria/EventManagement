@@ -15,34 +15,31 @@
             font-family: Arial, sans-serif; /* Use a standard font */
             margin: 0;
             padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
         }
         .container {
-            flex-grow: 1;
             display: flex;
             justify-content: center;
             align-items: center;
+            height: 100vh;
         }
         /* Ticket styles */
         .ticket {
-            width: 70%; /* Adjust the width as needed */
-            max-width: 400px; /* Limit the maximum width */
+            max-width: 400px; /* Adjust the width as needed */
             background-color: rgba(243, 243, 243, 0.8); /* Transparent background color */
             border-radius: 20px; /* Increase border-radius for a rounded appearance */
             padding: 20px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             display: flex; /* Use flexbox to align image and content */
             overflow: hidden; /* Ensure the ticket maintains its shape */
-            position: relative; /* Make the position relative for absolute positioning of the button */
-            margin: auto; /* Center the ticket horizontally */
+            position: relative; /* Position relative for absolute positioning of download button */
         }
 
         .ticket-image {
             width: 100px; /* Adjust the image size as needed */
             height: auto;
             margin-right: 20px; /* Add margin for separation */
+            border-top-left-radius: 20px; /* Ensure image corner matches ticket */
+            border-bottom-left-radius: 20px;
         }
 
         .ticket-content {
@@ -82,16 +79,6 @@
         .download-button:hover {
             background-color: rgba(0, 0, 255, 0.4);
         }
-
-        .copyright {
-            background-color: rgba(0, 0, 0, 0.2);
-            color: #fff;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 12px;
-            margin-top: auto;
-            align-self: center;
-        }
     </style>
 </head>
 <body>
@@ -108,29 +95,20 @@
         </div>
         <button class="download-button" onclick="downloadTicket()">Download Ticket</button>
     </div>
-    <div class="copyright">&copy; 2024 Event Management System. All rights reserved.</div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script>
         function downloadTicket() {
-            // Create a new jsPDF instance
-            const doc = new jsPDF();
-
-            // Define the content of the PDF
-            const content = `
-                Congratulations, {{ full_name }}!
-
-                Your ticket details:
-                - Email: {{ email }}
-                - Ticket Number: {{ ticket_number }}
-                - Code: {{ ticket_code }}
-            `;
-
-            // Add the content to the PDF
-            doc.text(content, 10, 10);
-
-            // Save the PDF
-            doc.save("ticket.pdf");
+            fetch('/generate_ticket/')
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'ticket.pdf';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                });
         }
     </script>
 </body>
