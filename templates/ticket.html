@@ -1,23 +1,49 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Virtual Ticket</title>
-    <link rel="stylesheet" href="{% static 'css/ticket.css' %}">
+    <title>Ticket</title>
+    <style>
+        .ticket {
+            width: 300px;
+            height: 200px;
+            border: 2px solid #000;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 50px auto;
+            position: relative;
+        }
+        .ticket img {
+            width: 80px;
+            height: 80px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            border-radius: 50%;
+        }
+        .ticket-content {
+            padding: 10px;
+        }
+        .congratulations {
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .info {
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
     <div class="ticket">
-        <h1>Virtual Ticket</h1>
-        <div class="ticket-info">
-            <p><strong>Ticket Number:</strong> <span id="ticket-number"></span></p>
-            <p><strong>Name:</strong> John Doe</p>
-            <p><strong>Event:</strong> Example Event</p>
-            <img src="placeholder.jpg" alt="Event Poster">
+        <img src="event_image.jpg" alt="Event Image">
+        <div class="ticket-content">
+            <p class="congratulations">Congratulations!</p>
+            <p class="info"><strong>Name:</strong> John Doe</p>
+            <p class="info"><strong>Email:</strong> johndoe@example.com</p>
+            <p class="info"><strong>Event:</strong> Example Event</p>
         </div>
     </div>
-
-    <script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>
