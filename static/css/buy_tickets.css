@@ -1,8 +1,8 @@
-body {
+.body {
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
-    /* background-image: url('https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); */
+    background-image: url('https://www.milesweb.in/blog/wp-content/uploads/2015/06/ecommerce-stores-hosted-vs-licensed-shopping-cart-solutions-min-1.jpg');
     background-size: cover;
     background-position: center;
 }
@@ -15,9 +15,9 @@ body {
 }
 
 form {
-    background-color: rgba(255, 255, 255, 0); /* Fully transparent */
+    background-color: rgba(255, 255, 255, 0); 
     padding: 30px;
-    border-radius: 15px;
+    border-radius: 10px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
     width: 350px;
     text-align: center;
@@ -54,7 +54,7 @@ select {
 button[type="submit"] {
     width: 100%;
     padding: 10px;
-    background-color: #007bff;
+    background-color: #333;
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -64,15 +64,15 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-    background-color: #0056b3;
+    background-color: #333;
 }
 
 
 .payment-option {
     flex-grow: 1;
     padding: 10px;
-    background-color: #007bff;
-    color: #342b96;
+    background-color: #333;
+    color: #333;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -81,5 +81,11 @@ button[type="submit"]:hover {
 }
 
 .payment-option:hover {
-    background-color: #0056b3;
+    background-color: #333;
+}
+
+.ticket-link button,
+.ticket-link button:hover,
+.ticket-link button:focus {
+  color: #333;
 }

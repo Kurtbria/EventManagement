@@ -63,21 +63,14 @@
 
 <form action="{% url 'charge' %}" method="post" id="payment-form">
     {% csrf_token %}
-    <label for="card-element">
-      Email Address
-    </label>
-    <div class="form-row">
-      <input type="email" id="email" name="email"required><br>
-    </div>
     <div class="form-row">
       <label for="card-element">
         Credit or debit card
       </label>
       <div id="card-element">
-        <!-- A Stripe Element will be inserted here. -->
+
       </div>
   
-      <!-- Used to display form errors. -->
       <div id="card-errors" role="alert"></div>
     </div>
   
@@ -109,9 +102,7 @@
       });
     });
 
-    // Define function to handle the token received from Stripe
     function stripeTokenHandler(token) {
-      // Insert the token ID into the form so it gets submitted to the server
       var form = document.getElementById('payment-form');
       var hiddenInput = document.createElement('input');
       hiddenInput.setAttribute('type', 'hidden');
@@ -119,7 +110,6 @@
       hiddenInput.setAttribute('value', token.id);
       form.appendChild(hiddenInput);
       
-      // Submit the form
       form.submit();
     }
   </script>
