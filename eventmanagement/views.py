@@ -13,6 +13,7 @@ from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse
 from PIL import Image, ImageDraw, ImageFont
+from django.contrib.auth.forms import UserCreationForm
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -23,57 +24,60 @@ SHORTCODE = 'your_shortcode'
 PASSKEY = 'your_passkey'
 INITIATE_URL = 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest'
 
+def home(request):
+    print(request.user)
+    return render(request, 'base.html')
+
 def signup(request):
     if request.method == 'POST':
+        # Extract data from POST request
         username = request.POST.get('username')
         email = request.POST.get('email')
         password = request.POST.get('password')
-        password2 = request.POST.get('password2')
+        confirm_password = request.POST.get('confirm_password')
         
-        if len(password) < 8:
-            messages.error(request, 'Password must be at least eight characters')
+        # Perform basic validation
+        if not (username and email and password and confirm_password):
+            messages.error(request, 'All fields are required.')
             return redirect('signup')
-            
+        
+        if password != confirm_password:
+            messages.error(request, 'Passwords do not match.')
+            return redirect('signup')
+        
+        # Check if user with the same username or email already exists
         if User.objects.filter(username=username).exists():
-            messages.error(request, 'Username already taken.')
+            messages.error(request, 'Username is already taken.')
             return redirect('signup')
-            
+        
         if User.objects.filter(email=email).exists():
-            messages.error(request, 'Email already exists')
+            messages.error(request, 'Email is already registered.')
             return redirect('signup')
         
-        if password != password2:
-            messages.error(request, 'Passwords do not match.') 
-            return redirect('signup')
+        # Create the user
+        user = User.objects.create_user(username=username, email=email, password=password)
         
-        if not username.isalnum():
-            messages.error(request, 'Username must be alphanumeric')
-            return redirect('signup')
-            
-        myuser = User.objects.create_user(username=username, email=email, password=password)
-        messages.success(request, 'Account created successfully')
-        return redirect('login')
-    else:
-        return render(request, 'signup.html')
+        # Optionally, you can log in the user after signup
+        # auth.login(request, user)
+        
+        # Redirect to login page with success message
+        messages.success(request, 'Account created successfully. Please login.')
+        return redirect('signin')
+    
+    # Render the signup form template for GET requests
+    return render(request, 'signup.html')
 
-def login_user(request):
+def signin(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        user = authenticate(username=username, password=password)
-
+        user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
             return redirect('home')
         else:
-            messages.error(request, 'Invalid username or password.')
-            return redirect('login')  
-
-    return render(request, 'login.html')
-
-def home(request):
-    print(request.user)
-    return render(request, 'base.html')
+            pass
+    return render(request, 'signin.html')
 
 def events(request):
     print(request.user)
@@ -102,9 +106,6 @@ def charge(request):
         
         return redirect(reverse('success', args=[amount]))
 
-def success_msg(request, args):
-    amount = args
-    return render(request, 'base.success.html', {'amount': amount})
 
 def ticket(request):
     print(request.user)
