@@ -17,7 +17,7 @@ from django.contrib.auth.forms import UserCreationForm
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
-# M-Pesa API credentials
+
 CONSUMER_KEY = 'your_consumer_key'
 CONSUMER_SECRET = 'your_consumer_secret'
 SHORTCODE = 'your_shortcode'
@@ -30,13 +30,12 @@ def home(request):
 
 def signup(request):
     if request.method == 'POST':
-        # Extract data from POST request
+
         username = request.POST.get('username')
         email = request.POST.get('email')
         password = request.POST.get('password')
         confirm_password = request.POST.get('confirm_password')
-        
-        # Perform basic validation
+
         if not (username and email and password and confirm_password):
             messages.error(request, 'All fields are required.')
             return redirect('signup')
@@ -44,8 +43,7 @@ def signup(request):
         if password != confirm_password:
             messages.error(request, 'Passwords do not match.')
             return redirect('signup')
-        
-        # Check if user with the same username or email already exists
+
         if User.objects.filter(username=username).exists():
             messages.error(request, 'Username is already taken.')
             return redirect('signup')
@@ -53,18 +51,12 @@ def signup(request):
         if User.objects.filter(email=email).exists():
             messages.error(request, 'Email is already registered.')
             return redirect('signup')
-        
-        # Create the user
+
         user = User.objects.create_user(username=username, email=email, password=password)
         
-        # Optionally, you can log in the user after signup
-        # auth.login(request, user)
-        
-        # Redirect to login page with success message
+
         messages.success(request, 'Account created successfully. Please login.')
         return redirect('signin')
-    
-    # Render the signup form template for GET requests
     return render(request, 'signup.html')
 
 def signin(request):
@@ -142,16 +134,11 @@ def callback(request):
     return JsonResponse({"error": "Only POST requests are allowed"})
 
 
-
-import stripe
-from django.conf import settings
-from django.shortcuts import render, redirect
-
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 def payment_process(request):
-    # Code to calculate the amount dynamically
-    amount = 1000  # Amount in cents, for example $10.00
+
+    amount = 1000  
 
     return render(request, 'payment_process.html', {'amount': amount})
 
@@ -175,13 +162,15 @@ def create_checkout_session(request):
             'quantity': 1,
         }],
         mode='payment',
-        success_url='https://yourdomain.com/payment/success/',
-        cancel_url='https://yourdomain.com/payment/cancel/',
+        success_url='https://www.domain.com/payment/success/?redirect=generate_ticket',
+        cancel_url='https://domain.com/payment/cancel/',
     )
 
     return redirect(session.url)
 
 
+def payment_success(request):
+    return redirect('generate_ticket')
 
 def generate_ticket(request):
     ticket_number = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
