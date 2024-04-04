@@ -106,7 +106,6 @@ def charge(request):
         
         return redirect(reverse('success', args=[amount]))
 
-
 def ticket(request):
     print(request.user)
     return render(request, 'ticket.html')
@@ -122,7 +121,6 @@ def initiate_payment(request):
         }
         response = requests.request("GET", url, data=payload, headers=headers, params=querystring)
         print(response.text)
-        # Process the response and return appropriate JSON response
         return JsonResponse({"success": True})
     else:
         return JsonResponse({"error": "Only POST requests are allowed"})
@@ -139,49 +137,56 @@ def get_access_token():
 @csrf_exempt
 def callback(request):
     if request.method == 'POST':
-        # Process M-Pesa callback notification
-        # Update transaction status in your database
-        # You can use a background task processing library like Celery to handle this asynchronously
-        # Respond to Safaricom server with HTTP status 200 to acknowledge receipt of the notification
         return JsonResponse({"success": True})
 
     return JsonResponse({"error": "Only POST requests are allowed"})
 
 
-'''
+
+import stripe
+from django.conf import settings
+from django.shortcuts import render, redirect
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
+
 def payment_process(request):
-    paypal_dict = {
-        'business': settings.PAYPAL_RECEIVER_EMAIL,
-        'amount': '10.00',
-        'currency_code': 'USD',
-        'item_name': 'Virtual Ticket',
-        'invoice': 'unique-invoice-id',
-        'notify_url': 'https://yourdomain.com/paypal/ipn/',  
-        'return_url': 'https://yourdomain.com/payment/success/',
-        'cancel_return': 'https://yourdomain.com/payment/cancel/',
-    }
-    form = PayPalPaymentsForm(initial=paypal_dict)
-    return render(request, 'payment_process.html', {'form': form})
+    # Code to calculate the amount dynamically
+    amount = 1000  # Amount in cents, for example $10.00
 
-@csrf_exempt
+    return render(request, 'payment_process.html', {'amount': amount})
+
 def payment_success(request):
-    return HttpResponse("Payment Successful")
+    return render(request, 'payment_success.html')
 
-@csrf_exempt
 def payment_cancel(request):
-    return HttpResponse("Payment Canceled")
-'''
+    return render(request, 'payment_cancel.html')
+
+def create_checkout_session(request):
+    session = stripe.checkout.Session.create(
+        payment_method_types=['card'],
+        line_items=[{
+            'price_data': {
+                'currency': 'usd',
+                'product_data': {
+                    'name': 'Virtual Ticket',
+                },
+                'unit_amount': 100,
+            },
+            'quantity': 1,
+        }],
+        mode='payment',
+        success_url='https://yourdomain.com/payment/success/',
+        cancel_url='https://yourdomain.com/payment/cancel/',
+    )
+
+    return redirect(session.url)
 
 
 
 def generate_ticket(request):
-    # Generate a unique ticket number and code
     ticket_number = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
     ticket_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=12))
 
-    # Get form data
     full_name = request.POST.get('fullName')
     email = request.POST.get('email')
-
-    # Render the ticket template with the generated data
     return render(request, 'ticket_template.html', {'full_name': full_name, 'email': email, 'ticket_number': ticket_number, 'ticket_code': ticket_code})

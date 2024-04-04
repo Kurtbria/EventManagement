@@ -1,0 +1,67 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-image: url('https://wallpapercrafter.com/desktop/4465-dj-music-disco-installation-4k.jpg'); 
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat; 
+    color: #fff; 
+    min-height: 100vh; 
+    position: relative; 
+}
+
+header {
+    background-color: rgba(0, 0, 0, 0.5); 
+    padding: 20px;
+}
+
+.container {
+    padding: 20p   x;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.event {
+    background-color: rgba(0, 0, 0, 0.5); 
+    padding: 20px;
+    margin: 20px;
+    max-width: 400px;
+    text-align: center;
+}
+
+.event img {
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+}
+
+.event p {
+    color: #fff; 
+}
+
+.event a {
+    display: inline-block;
+    background-color: #ff6600;
+    color: #fff; 
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.event a:hover {
+    background-color: #e65c00; 
+}
+
+footer {
+    background-color: rgba(0, 0, 0, 0.5); 
+    color: #fff; 
+    padding: 20px;
+    position: absolute; 
+    bottom: 0; 
+    left: 0;
+    width: 100%; 
+}
+
