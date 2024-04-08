@@ -60,9 +60,6 @@ class SignUpViewTest(TestCase):
         self.assertRedirects(response, reverse('signup'))
         self.assertFalse(User.objects.filter(username='testuser').exists())
 
-from django.test import TestCase, Client
-from django.contrib.auth.models import User
-from .views import generate_ticket
 
 class GenerateTicketViewTest(TestCase):
     def setUp(self):
