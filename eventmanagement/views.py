@@ -181,3 +181,6 @@ def generate_ticket(request):
     full_name = request.POST.get('fullName')
     email = request.POST.get('email')
     return render(request, 'ticket_template.html', {'full_name': full_name, 'email': email, 'ticket_number': ticket_number, 'ticket_code': ticket_code})
+def exit_application(request):
+    print.user
+    pass
