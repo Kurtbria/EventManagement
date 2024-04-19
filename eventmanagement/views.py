@@ -86,10 +86,11 @@ def buy_tickets(request):
 
 def credit_card(request):
     print(request.user)
+    
     return render(request, 'credit_card.html')
 
 def charge(request):   
-    if request.method == 'POST':
+    
         amount = 5 
         print('Data', request.POST)
         
@@ -165,7 +166,7 @@ def create_checkout_session(request):
         }],
         mode='payment',
         success_url='https://www.domain.com/payment/success/?redirect=generate_ticket',
-        cancel_url='https://domain.com/payment/cancel/',
+        cancel_url='https://www.domain.com/payment/cancel/',
     )
 
     return redirect(session.url)
@@ -184,3 +185,64 @@ def generate_ticket(request):
 def exit_application(request):
     print.user
     pass
+
+def validate_user(request):
+    print(request.user)
+
+    try:
+        if user.exists:
+            login(request,user)
+    except:
+        return JsonResponse('error:' 'Invalid Form Access Type')
+
+def success_domain(request):
+    print(request, user)
+
+    return render('successurl.com')
+
+
+def create_paypal_payment(request):
+    # PayPal API endpoint for Sandbox environment
+    paypal_api_url = 'https://api-m.sandbox.paypal.com/v1/payments/payment'
+
+    # PayPal API credentials
+    client_id = settings.PAYPAL_SANDBOX_CLIENT_ID
+    secret = settings.PAYPAL_SANDBOX_SECRET
+
+    # Prepare request headers
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': f'Bearer {client_id}:{secret}'
+    }
+
+    # Prepare request data for creating payment (example)
+    data = {
+        'intent': 'sale',
+        'payer': {
+            'payment_method': 'paypal'
+        },
+        'transactions': [{
+            'amount': {
+                'total': '10.00',
+                'currency': 'USD'
+            }
+        }],
+        'redirect_urls': {
+            'return_url': 'http://localhost:8000/execute_paypal_payment/',
+            'cancel_url': 'http://localhost:8000/cancel_paypal_payment/'
+        }
+    }
+
+    # Make API call to create payment
+    response = requests.post(paypal_api_url, headers=headers, json=data)
+
+    # Handle response accordingly
+    if response.status_code == 201:
+        payment = response.json()
+        approval_url = next(link['href'] for link in payment['links'] if link['rel'] == 'approval_url')
+        return HttpResponseRedirect(approval_url)
+    else:
+        # Handle error response
+        return HttpResponse('Failed to create PayPal payment', status=response.status_code)
+
+

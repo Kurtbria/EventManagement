@@ -16,6 +16,7 @@ urlpatterns = [
     path('initiate_payment',views.initiate_payment,name='initiate_payment'),
     path('ticket',views.ticket,name='ticket'),
     path('generate_ticket/', views.generate_ticket, name='generate_ticket'),
+    path('create_paypal_payment',views.create_paypal_payment,name='create_paypal_payment'),
 ]
     
     
