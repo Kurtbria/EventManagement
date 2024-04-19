@@ -202,20 +202,17 @@ def success_domain(request):
 
 
 def create_paypal_payment(request):
-    # PayPal API endpoint for Sandbox environment
     paypal_api_url = 'https://api-m.sandbox.paypal.com/v1/payments/payment'
 
-    # PayPal API credentials
     client_id = settings.PAYPAL_SANDBOX_CLIENT_ID
     secret = settings.PAYPAL_SANDBOX_SECRET
 
-    # Prepare request headers
+
     headers = {
         'Content-Type': 'application/json',
         'Authorization': f'Bearer {client_id}:{secret}'
     }
 
-    # Prepare request data for creating payment (example)
     data = {
         'intent': 'sale',
         'payer': {

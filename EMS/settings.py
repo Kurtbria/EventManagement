@@ -114,16 +114,14 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.1/howto/static-files/
-
 STATIC_URL = 'static/'
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static' ),)
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-# settings.py
+
 
 STRIPE_PUBLISHABLE_KEY = 'pk_test_51OudPfP690P0gbwe1a8utUmt4uvLsTiua66nYnAlnUjCZi2em3r9mFZt9YSPytgxzOetAID93U1aMAQFV02ittEz00hVhiEWK4'
 STRIPE_SECRET_KEY = 'sk_test_51OudPfP690P0gbwe0SKTlDWF5MVgFNSkyK7cGs8CtUGfWO47dUgHMKaH0XJmhCihtO1MkuGH6Bax6h7fmKzoLqhv00TgDl9jsu'
+
+PAYPAL_SANDBOX_CLIENT_ID = 'YOUR_SANDBOX_CLIENT_ID'
+PAYPAL_SANDBOX_SECRET = 'YOUR_SANDBOX_SECRET'
