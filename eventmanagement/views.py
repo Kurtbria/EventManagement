@@ -183,7 +183,7 @@ def generate_ticket(request):
     email = request.POST.get('email')
     return render(request, 'ticket_template.html', {'full_name': full_name, 'email': email, 'ticket_number': ticket_number, 'ticket_code': ticket_code})
 def exit_application(request):
-    print.user
+    print(request.user)
     pass
 
 def validate_user(request):
@@ -197,9 +197,7 @@ def validate_user(request):
 
 def success_domain(request):
     print(request, user)
-
     return render('successurl.com')
-
 
 def create_paypal_payment(request):
     paypal_api_url = 'https://api-m.sandbox.paypal.com/v1/payments/payment'
@@ -230,16 +228,23 @@ def create_paypal_payment(request):
         }
     }
 
-    # Make API call to create payment
     response = requests.post(paypal_api_url, headers=headers, json=data)
 
-    # Handle response accordingly
     if response.status_code == 201:
         payment = response.json()
         approval_url = next(link['href'] for link in payment['links'] if link['rel'] == 'approval_url')
         return HttpResponseRedirect(approval_url)
     else:
-        # Handle error response
         return HttpResponse('Failed to create PayPal payment', status=response.status_code)
 
+
+def create_super_user(request):
+    print (request.user)
+    try:
+        if user is  not  None:
+            login(request, user)
+        else:
+            pass    
+    except:
+        EOFError
 
