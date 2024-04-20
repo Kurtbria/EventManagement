@@ -186,19 +186,6 @@ def exit_application(request):
     print(request.user)
     pass
 
-def validate_user(request):
-    print(request.user)
-
-    try:
-        if user.exists:
-            login(request,user)
-    except:
-        return JsonResponse('error:' 'Invalid Form Access Type')
-
-def success_domain(request):
-    print(request, user)
-    return render('successurl.com')
-
 def create_paypal_payment(request):
     paypal_api_url = 'https://api-m.sandbox.paypal.com/v1/payments/payment'
 
@@ -238,13 +225,4 @@ def create_paypal_payment(request):
         return HttpResponse('Failed to create PayPal payment', status=response.status_code)
 
 
-def create_super_user(request):
-    print (request.user)
-    try:
-        if user is  not  None:
-            login(request, user)
-        else:
-            pass    
-    except:
-        EOFError
 
