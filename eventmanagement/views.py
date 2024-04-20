@@ -70,7 +70,7 @@ def signin(request):
             login(request, user)
             return redirect('home')
         else:
-            pass
+            return  HttpResponse('Error signing user')
     return render(request, 'signin.html')
 
 def events(request):
@@ -181,7 +181,9 @@ def generate_ticket(request):
 
     full_name = request.POST.get('fullName')
     email = request.POST.get('email')
+ 
     return render(request, 'ticket_template.html', {'full_name': full_name, 'email': email, 'ticket_number': ticket_number, 'ticket_code': ticket_code})
+
 def exit_application(request):
     print(request.user)
     pass
@@ -210,7 +212,7 @@ def create_paypal_payment(request):
             }
         }],
         'redirect_urls': {
-            'return_url': 'http://localhost:8000/execute_paypal_payment/',
+            'return_url': 'https://eb5b-41-90-184-122.ngrok-free.appv',
             'cancel_url': 'http://localhost:8000/cancel_paypal_payment/'
         }
     }
