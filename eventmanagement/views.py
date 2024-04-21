@@ -77,7 +77,6 @@ def signout(request):
     logout(request)
     return redirect('home')  
 
-
 def events(request):
     print(request.user)
     return render(request, 'events.html', {'events': events})
@@ -176,7 +175,6 @@ def create_checkout_session(request):
 
     return redirect(session.url)
 
-
 def payment_success(request):
     return redirect('generate_ticket')
 
@@ -188,10 +186,6 @@ def generate_ticket(request):
     email = request.POST.get('email')
  
     return render(request, 'ticket_template.html', {'full_name': full_name, 'email': email, 'ticket_number': ticket_number, 'ticket_code': ticket_code})
-
-def exit_application(request):
-    print(request.user)
-    pass
 
 def create_paypal_payment(request):
     paypal_api_url = 'https://api-m.sandbox.paypal.com/v1/payments/payment'
@@ -230,6 +224,4 @@ def create_paypal_payment(request):
         return HttpResponseRedirect(approval_url)
     else:
         return HttpResponse('Failed to create PayPal payment', status=response.status_code)
-
-
 
