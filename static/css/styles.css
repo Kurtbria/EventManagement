@@ -1,11 +1,11 @@
-/* Reset some default styles */
+
 body, html {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
 }
 
-/* Header styling */
+
 header {
   background-color: #333;
   color: #fff;
@@ -18,7 +18,7 @@ nav a {
   margin-right: 20px;
 }
 
-/* Hero section styling */
+
 .hero {
   background-image: url('https://i.guim.co.uk/img/media/2c46e39976255f76724f6af1aae317defb9c5644/0_137_4285_2571/master/4285.jpg?width=1900&dpr=1&s=none');
   background-size: cover;
@@ -62,7 +62,6 @@ nav a {
   background-color: #300d8f;
 }
 
-/* Footer styling */
 footer {
   background-color: #333;
   color: #fff;

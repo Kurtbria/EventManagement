@@ -6,7 +6,7 @@ import io
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.conf import settings
 from django.http import JsonResponse, HttpResponse
@@ -72,6 +72,11 @@ def signin(request):
         else:
             return  HttpResponse('Error signing user')
     return render(request, 'signin.html')
+
+def signout(request):
+    logout(request)
+    return redirect('home')  
+
 
 def events(request):
     print(request.user)
