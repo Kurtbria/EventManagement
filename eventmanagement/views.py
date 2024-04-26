@@ -111,7 +111,7 @@ def ticket(request):
 
 @csrf_exempt
 def initiate_payment(request):
-    if request.method == 'POST':
+    if request.method == 'GET':
         url = "https://sandbox.safaricom.co.ke/oauth/v1/generate"
         querystring = {"grant_type": "client_credentials"}
         payload = ""
