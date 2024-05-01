@@ -225,3 +225,13 @@ def create_paypal_payment(request):
     else:
         return HttpResponse('Failed to create PayPal payment', status=response.status_code)
 
+
+def exit_application(request):
+    print(request.user)  
+
+    try:
+        login(request, user)
+    except:
+        AttributeError
+
+    return  HttpResponse(request, 'Service not Available')     
