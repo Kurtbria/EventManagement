@@ -66,22 +66,11 @@ class GenerateTicketViewTest(TestCase):
         self.client = Client()
 
     def test_generate_ticket(self):
-        # Create a user for the test
         User.objects.create_user(username='testuser', email='test@example.com', password='testpassword')
-
-        # Log in the user
         self.client.login(username='testuser', password='testpassword')
-
-        # Make a POST request to the view
         response = self.client.post('/generate_ticket/', {'fullName': 'Test User', 'email': 'test@example.com'})
-
-        # Check if the response status code is 200 (OK)
         self.assertEqual(response.status_code, 200)
-
-        # Check if the correct template is used
         self.assertTemplateUsed(response, 'ticket_template.html')
-
-        # Check if the context data contains the expected values
         self.assertEqual(response.context_data['full_name'], 'Test User')
         self.assertEqual(response.context_data['email'], 'test@example.com')
         self.assertTrue(response.context_data['ticket_number'])

@@ -191,11 +191,9 @@ def generate_ticket(request):
         email=email,
         ticket_number=ticket_number,
         ticket_code=ticket_code,
+        #ticket.number_of_tickets += 1,
+        #tickets.save()
     )
-
-    # Optionally, you can increment the number_of_tickets field if you want to track the number of tickets per user
-    # ticket.number_of_tickets += 1
-    # ticket.save()
 
     return render(request, 'ticket_template.html', {'full_name': full_name, 'email': email, 'ticket_number': ticket_number, 'ticket_code': ticket_code})
 
@@ -237,14 +235,3 @@ def create_paypal_payment(request):
         return HttpResponseRedirect(approval_url)
     else:
         return HttpResponse('Failed to create PayPal payment', status=response.status_code)
-
-
-def exit_application(request):
-    print(request.user)  
-
-    try:
-        login(request, user)
-    except:
-        AttributeError
-
-    return  HttpResponse(request, 'Service not Available')     
