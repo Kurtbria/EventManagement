@@ -14,7 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse
 from PIL import Image, ImageDraw, ImageFont
 from django.contrib.auth.forms import UserCreationForm
-
+from .models import Ticket
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
@@ -178,14 +178,27 @@ def create_checkout_session(request):
 def payment_success(request):
     return redirect('generate_ticket')
 
+
 def generate_ticket(request):
     ticket_number = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
     ticket_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=12))
 
     full_name = request.POST.get('fullName')
     email = request.POST.get('email')
- 
+
+    ticket = Ticket.objects.create(
+        full_name=full_name,
+        email=email,
+        ticket_number=ticket_number,
+        ticket_code=ticket_code,
+    )
+
+    # Optionally, you can increment the number_of_tickets field if you want to track the number of tickets per user
+    # ticket.number_of_tickets += 1
+    # ticket.save()
+
     return render(request, 'ticket_template.html', {'full_name': full_name, 'email': email, 'ticket_number': ticket_number, 'ticket_code': ticket_code})
+
 
 def create_paypal_payment(request):
     paypal_api_url = 'https://api-m.sandbox.paypal.com/v1/payments/payment'
