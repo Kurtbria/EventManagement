@@ -28,36 +28,38 @@ def home(request):
     print(request.user)
     return render(request, 'base.html')
 
+from django.http import JsonResponse
+
 def signup(request):
     if request.method == 'POST':
-
         username = request.POST.get('username')
         email = request.POST.get('email')
         password = request.POST.get('password')
         confirm_password = request.POST.get('confirm_password')
 
+        errors = []
+
+        # Basic form validation
         if not (username and email and password and confirm_password):
-            messages.error(request, 'All fields are required.')
-            return redirect('signup')
-        
+            errors.append('All fields are required.')
         if password != confirm_password:
-            messages.error(request, 'Passwords do not match.')
-            return redirect('signup')
-
+            errors.append('Passwords do not match.')
         if User.objects.filter(username=username).exists():
-            messages.error(request, 'Username is already taken.')
-            return redirect('signup')
-        
+            errors.append('Username is already taken.')
         if User.objects.filter(email=email).exists():
-            messages.error(request, 'Email is already registered.')
-            return redirect('signup')
+            errors.append('Email is already registered.')
 
+        # If there are validation errors, return a JSON response with error messages
+        if errors:
+            return JsonResponse({'errors': errors}, status=400)
+
+        # If all validations pass, create the user and return a success message
         user = User.objects.create_user(username=username, email=email, password=password)
-        
-
         messages.success(request, 'Account created successfully. Please login.')
         return redirect('signin')
+
     return render(request, 'signup.html')
+
 
 def signin(request):
     if request.method == 'POST':

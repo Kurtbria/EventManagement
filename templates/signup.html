@@ -7,14 +7,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Signup - Event Management System</title>
     <link rel="stylesheet" href="{% static 'css/signup.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
     <header>
         <h1>Signup</h1>
     </header>
-
     <main>
-        <form action="{% url 'signup' %}" method="post">
+        <form id="signupForm" method="post">
             {% csrf_token %}
             <div class="form-group">
                 <label for="username">Username:</label>
@@ -32,13 +35,45 @@
                 <label for="confirm_password">Confirm Password:</label>
                 <input type="password" id="confirm_password" name="confirm_password" required>
             </div>
-            <button type="submit">Signup</button>
+            <button type="submit" class="btn btn-primary">Signup</button>
         </form>
         <p>Already have an account? <a href="{% url 'signin' %}">Sign in</a></p>
     </main>
 
-    <footer>
-        <p>&copy; 2024 Event Management System. All rights reserved.</p>
-    </footer>
+    <!-- Bootstrap Modal for Error Messages -->
+    <div class="modal" id="errorModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Error</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <ul id="errorMessageList" class="list-unstyled"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#signupForm').submit(function(event) {
+                event.preventDefault();
+                var formData = $(this).serialize();
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "signup" %}',
+                    data: formData,
+                    success: function(response) {
+                        window.location.href = '{% url "signin" %}';
+                    },
+                    error: function(xhr, status, error) {
+                        alert('An error occurred: ' + error); 
+                    }
+                });
+            });
+        });
+    </script>
+    
 </body>
 </html>
