@@ -39,7 +39,6 @@ def signup(request):
 
         errors = []
 
-        # Basic form validation
         if not (username and email and password and confirm_password):
             errors.append('All fields are required.')
         if password != confirm_password:
@@ -49,11 +48,8 @@ def signup(request):
         if User.objects.filter(email=email).exists():
             errors.append('Email is already registered.')
 
-        # If there are validation errors, return a JSON response with error messages
         if errors:
             return JsonResponse({'errors': errors}, status=400)
-
-        # If all validations pass, create the user and return a success message
         user = User.objects.create_user(username=username, email=email, password=password)
         messages.success(request, 'Account created successfully. Please login.')
         return redirect('signin')
