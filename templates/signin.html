@@ -6,13 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Event Management System{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/signin.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
 
 <div class="container">
     <div class="login-form">
         <h1>Signin/Login</h1>
-        <form action="{% url 'signin' %}" method="post">
+        <form id="loginForm" method="post">
             {% csrf_token %}
             <div class="form-group">
                 <label for="username">Username:</label>
@@ -22,11 +23,60 @@
                 <label for="password">Password:</label>
                 <input type="password" id="password" name="password" required>
             </div>
-            <button type="submit">Login</button>
+            <button type="submit" class="btn btn-primary">Login</button>
         </form>
         <p>Don't have an account? <a href="signup">Register</a></p>
     </div>
 </div>
+
+<!-- Bootstrap Modal for Error Messages -->
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Error</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <ul id="errorMessageList" class="list-unstyled"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#loginForm').submit(function(event) {
+            event.preventDefault();
+            var formData = $(this).serialize();
+            $.ajax({
+                type: 'POST',
+                url: '{% url "signin" %}',
+                data: formData,
+                success: function(response) {
+                    window.location.href = '{% url "home" %}';
+                },
+                error: function(xhr, status, error) {
+                    var errors = xhr.responseJSON.errors; // Get error messages from JSON response
+                    if (errors) {
+                        var errorMessageList = $('#errorMessageList');
+                        errorMessageList.empty(); // Clear previous error messages
+                        $.each(errors, function(index, error) {
+                            errorMessageList.append('<li>' + error + '</li>'); // Append error messages to modal
+                        });
+                        $('#errorModal').modal('show'); // Show modal with error messages
+                    }
+                }
+            });
+        });
+    });
+</script>
 
 </body>
 </html>

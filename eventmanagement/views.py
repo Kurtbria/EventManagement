@@ -28,7 +28,6 @@ def home(request):
     print(request.user)
     return render(request, 'base.html')
 
-from django.http import JsonResponse
 
 def signup(request):
     if request.method == 'POST':
@@ -51,6 +50,7 @@ def signup(request):
         if errors:
             return JsonResponse({'errors': errors}, status=400)
         user = User.objects.create_user(username=username, email=email, password=password)
+
         messages.success(request, 'Account created successfully. Please login.')
         return redirect('signin')
 
@@ -59,17 +59,21 @@ def signup(request):
 
 def signin(request):
     if request.method == 'POST':
-
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
         
         if user is not None:
             login(request, user)
-            return redirect('home')
+            return JsonResponse({'message': 'Login successful'})
+            return redirect(request, 'home')
         else:
-            return  HttpResponse('Error signing user')
-    return render(request, 'signin.html')
+            return JsonResponse({'errors': ['Invalid username or password']}, status=400)
+    elif request.method == 'GET':
+        return JsonResponse({'message': 'Welcome to the signin page!'})
+    else:
+        return JsonResponse({'errors': ['Method not allowed']}, status=405)
+
 
 def signout(request):
     logout(request)
