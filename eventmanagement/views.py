@@ -68,12 +68,8 @@ def signin(request):
             return JsonResponse({'message': 'Login successful'})
             return redirect(request, 'home')
         else:
-            return JsonResponse({'errors': ['Invalid username or password']}, status=400)
-    elif request.method == 'GET':
-        return JsonResponse({'message': 'Welcome to the signin page!'})
-    else:
-        return JsonResponse({'errors': ['Method not allowed']}, status=405)
-
+            return JsonResponse('error')
+    return render(request, 'signin.html')
 
 def signout(request):
     logout(request)
