@@ -238,13 +238,3 @@ def create_paypal_payment(request):
         return HttpResponseRedirect(approval_url)
     else:
         return HttpResponse('Failed to create PayPal payment', status=response.status_code)
-
-def func_exit(request):
-    print(request.user)
-
-    if request.method=='POST':
-        login(request.user)
-    else:
-        return JsonResponse('error:''Method not Allowed')
-
-    return render(request, 'home.html')
