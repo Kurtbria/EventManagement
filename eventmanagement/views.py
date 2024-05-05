@@ -3,6 +3,8 @@ import requests
 import random
 import string
 import io
+import datetime
+from django.utils import timezone
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
@@ -177,6 +179,8 @@ def payment_success(request):
     return redirect('generate_ticket')
 
 
+from django.utils import timezone
+
 def generate_ticket(request):
     ticket_number = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
     ticket_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=12))
@@ -184,17 +188,18 @@ def generate_ticket(request):
     full_name = request.POST.get('fullName')
     email = request.POST.get('email')
 
+    # Use timezone-aware datetime
+    purchase_datetime = timezone.now()
+
     ticket = Ticket.objects.create(
         full_name=full_name,
         email=email,
         ticket_number=ticket_number,
         ticket_code=ticket_code,
-        #ticket.number_of_tickets += 1,
-        #tickets.save()
+        date=purchase_datetime  # Save the purchase datetime in the ticket object
     )
 
-    return render(request, 'ticket_template.html', {'full_name': full_name, 'email': email, 'ticket_number': ticket_number, 'ticket_code': ticket_code})
-
+    return render(request, 'ticket_template.html', {'full_name': full_name, 'email': email, 'ticket_number': ticket_number, 'ticket_code': ticket_code, 'purchase_datetime': purchase_datetime})
 
 def create_paypal_payment(request):
     paypal_api_url = 'https://api-m.sandbox.paypal.com/v1/payments/payment'
@@ -233,3 +238,13 @@ def create_paypal_payment(request):
         return HttpResponseRedirect(approval_url)
     else:
         return HttpResponse('Failed to create PayPal payment', status=response.status_code)
+
+def func_exit(request):
+    print(request.user)
+
+    if request.method=='POST':
+        login(request.user)
+    else:
+        return JsonResponse('error:''Method not Allowed')
+
+    return render(request, 'home.html')

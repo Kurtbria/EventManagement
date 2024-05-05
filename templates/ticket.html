@@ -40,9 +40,10 @@
         <img src="event_image.jpg" alt="Event Image">
         <div class="ticket-content">
             <p class="congratulations">Congratulations!</p>
-            <p class="info"><strong>Name:</strong> John Doe</p>
-            <p class="info"><strong>Email:</strong> johndoe@example.com</p>
+            <p class="info"><strong>Name:</strong> {{ full_name }}</p>
+            <p class="info"><strong>Email:</strong> {{ email }}</p>
             <p class="info"><strong>Event:</strong> Example Event</p>
+            <p class="info"><strong>Date and Time of Purchase:</strong> {{ purchase_datetime }}</p> 
         </div>
     </div>
 </body>

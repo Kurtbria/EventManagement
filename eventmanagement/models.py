@@ -8,3 +8,4 @@ class Ticket(models.Model):
     ticket_code = models.CharField(max_length=12)
     number_of_tickets = models.IntegerField(default=1)
     date = models.DateTimeField(default=datetime.now())
+    purchase_datetime=models.DateField(default=datetime.now)
