@@ -63,15 +63,21 @@ def signin(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
+        
+        
         user = authenticate(request, username=username, password=password)
         
         if user is not None:
+            
             login(request, user)
-            return JsonResponse({'message': 'Login successful'})
-            return redirect(request, 'home')
+            return redirect('home') 
         else:
-            return JsonResponse('error')
+           
+            messages.error(request, 'Invalid username or password. Please try again.')
+            return redirect('signin')
     return render(request, 'signin.html')
+
+
 
 def signout(request):
     logout(request)
@@ -178,8 +184,6 @@ def create_checkout_session(request):
 def payment_success(request):
     return redirect('generate_ticket')
 
-
-from django.utils import timezone
 
 def generate_ticket(request):
     ticket_number = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))

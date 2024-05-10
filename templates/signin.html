@@ -7,6 +7,8 @@
     <title>{% block title %}Event Management System{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/signin.css' %}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- SweetAlert CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10">
 </head>
 <body>
 
@@ -29,26 +31,8 @@
     </div>
 </div>
 
-<!-- Bootstrap Modal for Error Messages -->
-<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Error</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <ul id="errorMessageList" class="list-unstyled"></ul>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- SweetAlert JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 <script>
     $(document).ready(function() {
@@ -63,15 +47,12 @@
                     window.location.href = '{% url "home" %}';
                 },
                 error: function(xhr, status, error) {
-                    var errors = xhr.responseJSON.errors; // Get error messages from JSON response
-                    if (errors) {
-                        var errorMessageList = $('#errorMessageList');
-                        errorMessageList.empty(); // Clear previous error messages
-                        $.each(errors, function(index, error) {
-                            errorMessageList.append('<li>' + error + '</li>'); // Append error messages to modal
-                        });
-                        $('#errorModal').modal('show'); // Show modal with error messages
-                    }
+                    
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Invalid username or password. Please try again.',
+                    });
                 }
             });
         });
