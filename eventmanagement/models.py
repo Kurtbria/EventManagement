@@ -17,3 +17,13 @@ class UserActivity(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.activity} - {self.timestamp}"
+
+'''class UserRecord(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    record = models.CharField(max_length=255)
+    timerecord = models.CharField(auto_now_add=True)
+
+
+    def __str__(self):
+        return  f"{self.user.username} -  { self.record} - {self.timerecord} "'''
+    
