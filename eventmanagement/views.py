@@ -242,3 +242,14 @@ def create_paypal_payment(request):
         return HttpResponseRedirect(approval_url)
     else:
         return HttpResponse('Failed to create PayPal payment', status=response.status_code)
+
+def exit_function(request):
+    print(request.user)
+
+    if request.method=='POST':
+        try:
+            login(request, user)
+        except:
+            return JsonResponse('error: server side connection lost')
+    else:
+        return render(request, '/')
