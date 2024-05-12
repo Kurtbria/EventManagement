@@ -17,7 +17,10 @@ urlpatterns = [
     path('ticket',views.ticket,name='ticket'),
     path('generate_ticket/', views.generate_ticket, name='generate_ticket'),
     path('create_paypal_payment',views.create_paypal_payment,name='create_paypal_payment'),
-    path('signout',views.signout,name='signout')
+    path('signout',views.signout,name='signout'),
+    path('user_privilage',views.user_privilage,name='user_privilage'),
+    path('email_pattern',views.email_pattern,name='email_pattern'),
+
 ]
     
     

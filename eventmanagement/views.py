@@ -2,13 +2,14 @@ import stripe
 import requests
 import random
 import string
-import io
+import io, re
 import datetime
 from django.utils import timezone
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.conf import settings
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
@@ -242,3 +243,33 @@ def create_paypal_payment(request):
         return HttpResponseRedirect(approval_url)
     else:
         return HttpResponse('Failed to create PayPal payment', status=response.status_code)
+
+@login_required
+def user_privilage(request):
+    if request.user.is_superuser:
+        return JsonResponse({'message': 'You are a privileged user.'})
+    elif request.user.is_staff:
+        if request.user.has_perm('your_app_name.can_access_privileged_feature'):
+            return JsonResponse({'message': 'You have access to the privileged feature.'})
+        else:
+            return JsonResponse({'message': 'You do not have access to the privileged feature.'}, status=403)
+    else:
+        return JsonResponse({'message': 'You do not have sufficient privileges.'}, status=403)
+
+
+def email_pattern(email):
+
+    email_pattern = r'^[a-zA-Z0-9._%+-]+@(?:[a-zA-Z0-9-]+\.)+(?:[a-zA-Z]{2,})$'
+    
+    if not re.match(email_pattern, email):
+        return False
+
+    if email.endswith('@gmail.com') or email.endswith('@googlemail.com'):
+        return True
+    else:
+        return False 
+
+
+
+
+
