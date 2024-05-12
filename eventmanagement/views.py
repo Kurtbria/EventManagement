@@ -11,7 +11,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.conf import settings
-from django.http import JsonResponse, HttpResponse
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse
 from PIL import Image, ImageDraw, ImageFont
@@ -242,14 +242,3 @@ def create_paypal_payment(request):
         return HttpResponseRedirect(approval_url)
     else:
         return HttpResponse('Failed to create PayPal payment', status=response.status_code)
-
-def exit_function(request):
-    print(request.user)
-
-    if request.method=='POST':
-        try:
-            login(request, user)
-        except:
-            return JsonResponse('error: server side connection lost')
-    else:
-        return render(request, '/')
