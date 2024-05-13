@@ -15,18 +15,3 @@ class UserActivityMiddleware(MiddlewareMixin):
             http_method=http_method
         )
 
-'''class UserRecordActivity(MiddlewareMixin):
-    def process_record(self, request):
-        user_browser = request.META.get('HTTP_USER_AGENT')
-        ip_address = request.META.get('IP_ADDR')
-        request_url = request.META.get_full_path()
-        http_method = request.get_full_path()
-
-
-        UserRecord.objects.create(
-            user_browser = user_browser,
-            ip_address = ip_address,
-            request_url = request_url,
-            http_method = http_method,
-
-        )'''
