@@ -32,3 +32,52 @@ class UserRecord(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.record} - {self.timerecord}"
+
+
+class EventActivity(models.Model):
+    #event = models.ForeignKey(on_delete=models.CASCADE)
+    event_desc = models.CharField(max_length=255)
+    timestamp = models.DateField(auto_now_add=True)
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    def __str__(self):
+        return f"{self.event} - {self.event_desc} - {self.timestamp}"
+
