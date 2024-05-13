@@ -9,3 +9,26 @@ class Ticket(models.Model):
     number_of_tickets = models.IntegerField(default=1)
     date = models.DateTimeField(default=timezone.now)
     purchase_datetime = models.DateTimeField(default=timezone.now)
+ 
+
+class UserActivity(models.Model):
+    user_agent = models.CharField(max_length=255, blank=True, null=True)
+    ip_address = models.CharField(max_length=45, blank=True, null=True)
+    request_url = models.CharField(max_length=255, blank=True, null=True)
+    http_method = models.CharField(max_length=10, blank=True, null=True)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"User Activity - {self.request_url}"
+
+    class Meta:
+        verbose_name_plural = "User Activities"
+
+
+class UserRecord(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    record = models.CharField(max_length=255)
+    timerecord = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.record} - {self.timerecord}"
