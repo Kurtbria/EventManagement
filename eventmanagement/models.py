@@ -38,6 +38,7 @@ class EventActivity(models.Model):
     #event = models.ForeignKey(on_delete=models.CASCADE)
     event_desc = models.CharField(max_length=255)
     timestamp = models.DateField(auto_now_add=True)
+    email_record = models.EmailField(max_length=50, default=True)
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
 
 

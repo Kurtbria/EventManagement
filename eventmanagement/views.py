@@ -88,9 +88,9 @@ def events(request):
     print(request.user)
     return render(request, 'events.html', {'events': events})
 
-def buy_events(request):
+def list_events(request):
     print(request.user)
-    return render(request, 'buyevents.html')
+    return render(request, 'list_events.html')
 
 def buy_tickets(request):
     return render(request, 'buy_tickets.html')
