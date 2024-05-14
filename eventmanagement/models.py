@@ -42,43 +42,29 @@ class EventActivity(models.Model):
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
 
 
+    def __str__(request, self):
+        return f"{self.event} - {self.event_desc} - {self.timestamp}"
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+class UserCallOut(models.Model):
+    #user = models.ForeignKey(on_delete=models.CASCADE)
+    callout_time = models.CharField(default=timezone.now)
 
 
     def __str__(self):
         return f"{self.event} - {self.event_desc} - {self.timestamp}"
 
+
+class Transaction(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    payment_status = models.CharField(max_length=20)  
+    transaction_id = models.CharField(max_length=50, blank=True, null=True)
+
+    def __str__(self):
+        return f'{self.user.username} - ${self.amount}'
+
+
+
+
+  
