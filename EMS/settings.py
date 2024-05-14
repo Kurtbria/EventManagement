@@ -102,7 +102,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# settings.py
 
 LOGGING = {
     'version': 1,
