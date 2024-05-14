@@ -19,7 +19,12 @@ urlpatterns = [
     path('signout',views.signout,name='signout'),
     path('user_privilage',views.user_privilage,name='user_privilage'),
     path('email_pattern',views.email_pattern,name='email_pattern'),
+    path('charge',views.charge,name='charge'),
+    path('charge/success/', views.charge_success, name='charge_success'),
+    path('charge/error/', views.charge_error, name='charge_error'),
 
 ]
+
+
     
     

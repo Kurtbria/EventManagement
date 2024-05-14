@@ -18,6 +18,8 @@ from django.urls import reverse
 from PIL import Image, ImageDraw, ImageFont
 from django.contrib.auth.forms import UserCreationForm
 from .models import Ticket
+from django.views.decorators.http import require_POST
+
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
@@ -100,6 +102,32 @@ def credit_card(request):
     
     return render(request, 'credit_card.html')
 
+def charge(request):
+    if request.method == 'POST':
+        token = request.POST.get('stripeToken')
+
+        try:
+            charge = stripe.Charge.create(
+                amount=1000,  
+                currency='usd',
+                description='Example charge',
+                source=token,
+            )
+            
+            return render(request, 'charge_success.html')
+        except stripe.error.CardError as e:
+            
+            return render(request, 'charge_error.html', {'error': e})
+    else:
+        # Render the payment form
+        return render(request, 'payment_form.html')
+
+def charge_success(request):
+    return render(request, 'charge_success.html')
+
+def charge_error(request):
+    return render(request, 'charge_error.html')
+
 
 def ticket(request):
     print(request.user)
@@ -137,8 +165,6 @@ def callback(request):
     return JsonResponse({"error": "Only POST requests are allowed"})
 
 
-stripe.api_key = settings.STRIPE_SECRET_KEY
-
 def payment_process(request):
 
     amount = 1000  
@@ -151,18 +177,6 @@ def payment_success(request):
 def payment_cancel(request):
     return render(request, 'payment_cancel.html')
 
-
-import random
-import string
-from django.conf import settings
-from django.shortcuts import redirect, render
-from django.urls import reverse
-from django.utils import timezone
-from django.views.decorators.http import require_POST  # Import require_POST decorator
-from .models import Ticket  # Import your Ticket model
-import stripe
-
-stripe.api_key = settings.STRIPE_SECRET_KEY
 
 @require_POST  # Ensure this view only handles POST requests
 def create_checkout_session(request):
