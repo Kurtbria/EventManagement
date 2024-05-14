@@ -100,17 +100,6 @@ def credit_card(request):
     
     return render(request, 'credit_card.html')
 
-def charge(request):   
-    
-        amount = 5 
-        print('Data', request.POST)
-        
-        stripe.Customer.create(
-            email=request.POST.get('email'),
-            name=request.POST.get('name'),
-        )
-        
-        return redirect(reverse('success', args=[amount]))
 
 def ticket(request):
     print(request.user)
@@ -162,31 +151,22 @@ def payment_success(request):
 def payment_cancel(request):
     return render(request, 'payment_cancel.html')
 
+
+import random
+import string
+from django.conf import settings
+from django.shortcuts import redirect, render
+from django.urls import reverse
+from django.utils import timezone
+from django.views.decorators.http import require_POST  # Import require_POST decorator
+from .models import Ticket  # Import your Ticket model
+import stripe
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
+
+@require_POST  # Ensure this view only handles POST requests
 def create_checkout_session(request):
-    session = stripe.checkout.Session.create(
-        payment_method_types=['card'],
-        line_items=[{
-            'price_data': {
-                'currency': 'usd',
-                'product_data': {
-                    'name': 'Virtual Ticket',
-                },
-                'unit_amount': 100,
-            },
-            'quantity': 1,
-        }],
-        mode='payment',
-        success_url='https://www.domain.com/payment/success/?redirect=generate_ticket',
-        cancel_url='https://www.domain.com/payment/cancel/',
-    )
-
-    return redirect(session.url)
-
-def payment_success(request):
-    return redirect('generate_ticket')
-
-
-def generate_ticket(request):
+    # Generate random ticket number and code
     ticket_number = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
     ticket_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=12))
 
@@ -196,6 +176,7 @@ def generate_ticket(request):
     # Use timezone-aware datetime
     purchase_datetime = timezone.now()
 
+    # Create Ticket object
     ticket = Ticket.objects.create(
         full_name=full_name,
         email=email,
@@ -204,7 +185,72 @@ def generate_ticket(request):
         date=purchase_datetime  # Save the purchase datetime in the ticket object
     )
 
-    return render(request, 'ticket_template.html', {'full_name': full_name, 'email': email, 'ticket_number': ticket_number, 'ticket_code': ticket_code, 'purchase_datetime': purchase_datetime})
+    # Construct success URL with ticket details
+    success_url = reverse('ticket_detail', kwargs={'ticket_id': ticket.id})
+
+    # Create Stripe checkout session
+    session = stripe.checkout.Session.create(
+        payment_method_types=['card'],
+        line_items=[{
+            'price_data': {
+                'currency': 'usd',
+                'product_data': {
+                    'name': 'Virtual Ticket',
+                },
+                'unit_amount': 100,  # Example price in cents
+            },
+            'quantity': 1,
+        }],
+        mode='payment',
+        success_url=request.build_absolute_uri(success_url),
+        cancel_url=request.build_absolute_uri(reverse('buy_tickets'))
+    )
+
+    # Redirect user to the Stripe checkout session
+    return redirect(session.url, code=303)
+
+def payment_success(request):
+    return redirect('generate_ticket')
+
+
+
+def generate_ticket(request):
+    if request.method == 'POST':
+        ticket_number = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+        ticket_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=12))
+
+
+        full_name = request.POST.get('fullName')
+        email = request.POST.get('email')
+
+
+        if full_name:
+            purchase_datetime = timezone.now()
+
+            # Create Ticket object
+            ticket = Ticket.objects.create(
+                full_name=full_name,
+                email=email,
+                ticket_number=ticket_number,
+                ticket_code=ticket_code,
+                date=purchase_datetime  #
+            )
+
+            return render(request, 'ticket_template.html', {
+                'full_name': full_name,
+                'email': email,
+                'ticket_number': ticket_number,
+                'ticket_code': ticket_code,
+                'purchase_datetime': purchase_datetime
+            })
+        else:
+            
+            error_message = "Full name is required."
+            return redirect(request, 'buy_tickets.html', {'error_message': error_message})
+    else:
+       
+        error_message = "Invalid request method."
+        return render(request, 'buy_tickets.html', {'error_message': error_message})
 
 def create_paypal_payment(request):
     paypal_api_url = 'https://api-m.sandbox.paypal.com/v1/payments/payment'
@@ -230,8 +276,8 @@ def create_paypal_payment(request):
             }
         }],
         'redirect_urls': {
-            'return_url': 'https://eb5b-41-90-184-122.ngrok-free.appv',
-            'cancel_url': 'http://localhost:8000/cancel_paypal_payment/'
+            'return_url': 'http://127.0.0.1:8000//',
+            'cancel_url': 'http://127.0.0.1:8000//'
         }
     }
 

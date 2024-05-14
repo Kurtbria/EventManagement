@@ -33,7 +33,7 @@
         }
         .ticket-link button {
             background-color: #333;
-            color: #fff; /* Optional: Set button text color to white for better contrast */
+            color: #fff; 
         }
 
     </style>
@@ -45,7 +45,7 @@
 </header>
 
 <main class="container">
-    <form id="ticketForm" action="/generate_ticket/" method="POST">
+    <form id="ticketForm" action="/generate_ticket/" method="post">
         {% csrf_token %}
         <div class="form-group">
             <label for="fullName">Full Name</label>

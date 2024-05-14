@@ -10,7 +10,6 @@ urlpatterns = [
     path('list_events',views.list_events,name='list_events'),
     path('buy_tickets',views.buy_tickets,name='buy_tickets'),
     path('credit_card',views.credit_card,name='credit_card'),
-    path('charge/',views.charge,name="charge"),
     path('ticket',views.ticket,name='ticket'),
     path('create_checkout_session',views.create_checkout_session,name='create_checkout_session'),
     path('initiate_payment',views.initiate_payment,name='initiate_payment'),
