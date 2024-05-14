@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayPal Checkout</title>
+</head>
+<body>
+    <h1>PayPal Checkout</h1>
+    <button id="checkout-button">Checkout</button>
+
+    <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=USD"></script>
+    <script>
+        paypal.Buttons({
+            createOrder: function(data, actions) {
+                return fetch('/create_order/', {
+                    method: 'POST'
+                }).then(function(response) {
+                    return response.json();
+                }).then(function(data) {
+                    return data.id; 
+                });
+            },
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(details) {
+                    alert('Transaction completed by ' + details.payer.name.given_name);
+                    
+                });
+            }
+        }).render('#checkout-button');
+    </script>
+</body>
+</html>

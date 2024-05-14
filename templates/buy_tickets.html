@@ -45,7 +45,7 @@
 </header>
 
 <main class="container">
-    <form id="ticketForm" action="/generate_ticket/" method="post">
+    <form id="ticketForm" action="/generate_ticket/" method="POST">
         {% csrf_token %}
         <div class="form-group">
             <label for="fullName">Full Name</label>
@@ -70,8 +70,8 @@
                     <button type="button" class="payment-option" value="creditCard">Credit Card</button>
                 </a>
                 
-                <a href="create_checkout_session" class="payment-option-link" onclick="submitForm('paypal')">
-                    <button type="button" class="payment-option" value="paypal">PayPal</button>
+                <a href="create_paypal_payment" class="payment-option-link" onclick="submitForm('paypal')">
+                    <button type="button" class="payment-option" value="paypal">Paypal</button>
                 </a>
                 
                 <a href="initiate_payment" class="payment-option-link" onclick="submitForm('bankTransfer')">

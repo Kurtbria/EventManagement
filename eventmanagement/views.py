@@ -2,8 +2,9 @@ import stripe
 import requests
 import random
 import string
-import io, re
+import io, re, os
 import datetime
+import base64
 from django.utils import timezone
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, auth
@@ -19,6 +20,9 @@ from PIL import Image, ImageDraw, ImageFont
 from django.contrib.auth.forms import UserCreationForm
 from .models import Ticket
 from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
+from .paypal_client import PayPalClient
+
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -28,6 +32,9 @@ CONSUMER_SECRET = 'your_consumer_secret'
 SHORTCODE = 'your_shortcode'
 PASSKEY = 'your_passkey'
 INITIATE_URL = 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest'
+
+PAYPAL_SANDBOX_CLIENT_ID = 'ARJkQAegMlMwFPfbjX5-7VMsuM7QLXgfAQMXM2rNE0r-G9Gs-FA_LO7REEZjVfqClc2C-lb7zpuHAFTi'
+PAYPAL_SANDBOX_SECRET = 'EKi2gCk9rSdvQSh5_59NPoCYbJWPRiirBvc5dJM_bJ4HKg3snkcKo2JqpMjUpGXjsqa5yRJq6m4Avumq'
 
 def home(request):
     print(request.user)
@@ -135,18 +142,19 @@ def ticket(request):
 
 @csrf_exempt
 def initiate_payment(request):
-    if request.method == 'GET':
-        url = "https://sandbox.safaricom.co.ke/oauth/v1/generate"
-        querystring = {"grant_type": "client_credentials"}
-        payload = ""
-        headers = {
-            "Authorization": "Basic SWZPREdqdkdYM0FjWkFTcTdSa1RWZ2FTSklNY001RGQ6WUp4ZVcxMTZaV0dGNFIzaA=="
-        }
-        response = requests.request("GET", url, data=payload, headers=headers, params=querystring)
-        print(response.text)
-        return JsonResponse({"success": True})
-    else:
-        return JsonResponse({"error": "Only POST requests are allowed"})
+  if request.method == 'POST':
+    url = "https://sandbox.safaricom.co.ke/oauth/v1/generate"
+    querystring = {"grant_type": "client_credentials"}
+    payload = ""
+    headers = {
+      "Authorization": "Basic SWZPREdqdkdYM0FjWkFTcTdSa1RWZ2FTSklNY001RGQ6WUp4ZVcxMTZaV0dGNFIzaA=="
+    }
+    response = requests.request("POST", url, headers=headers, params=querystring)
+    print(response.text)
+    return JsonResponse({"success": True})
+  else:
+    return JsonResponse({"error": "Only POST requests are allowed"})
+
 
 def get_access_token():
     url = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials'
@@ -178,131 +186,111 @@ def payment_cancel(request):
     return render(request, 'payment_cancel.html')
 
 
-@require_POST  # Ensure this view only handles POST requests
+'''@require_POST 
 def create_checkout_session(request):
-    # Generate random ticket number and code
+    if request.method=='POST':
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price_data': {
+                    'currency': 'usd',
+                    'product_data': {
+                        'name': 'Virtual Ticket',
+                    },
+                    'unit_amount': 100,  
+                },
+                'quantity': 1,
+            }],
+            mode='payment',
+            success_url=request.build_absolute_uri(success_url),
+            cancel_url=request.build_absolute_uri(reverse('buy_tickets'))
+        )
+
+    
+    return redirect(session.url, code=303)'''
+
+def payment_success(request):
+    return redirect('generate_ticket')
+
+
+@login_required
+def generate_ticket(request):
+  if request.method == 'POST':
     ticket_number = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
     ticket_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=12))
 
     full_name = request.POST.get('fullName')
     email = request.POST.get('email')
 
-    # Use timezone-aware datetime
-    purchase_datetime = timezone.now()
+    if full_name:
+      purchase_datetime = timezone.now()
 
-    # Create Ticket object
-    ticket = Ticket.objects.create(
-        full_name=full_name,
-        email=email,
-        ticket_number=ticket_number,
-        ticket_code=ticket_code,
-        date=purchase_datetime  # Save the purchase datetime in the ticket object
-    )
+      # Create Ticket object
+      ticket = Ticket.objects.create(
+          full_name=full_name,
+          email=email,
+          ticket_number=ticket_number,
+          ticket_code=ticket_code,
+          date=purchase_datetime,
+      )
 
-    # Construct success URL with ticket details
-    success_url = reverse('ticket_detail', kwargs={'ticket_id': ticket.id})
-
-    # Create Stripe checkout session
-    session = stripe.checkout.Session.create(
-        payment_method_types=['card'],
-        line_items=[{
-            'price_data': {
-                'currency': 'usd',
-                'product_data': {
-                    'name': 'Virtual Ticket',
-                },
-                'unit_amount': 100,  # Example price in cents
-            },
-            'quantity': 1,
-        }],
-        mode='payment',
-        success_url=request.build_absolute_uri(success_url),
-        cancel_url=request.build_absolute_uri(reverse('buy_tickets'))
-    )
-
-    # Redirect user to the Stripe checkout session
-    return redirect(session.url, code=303)
-
-def payment_success(request):
-    return redirect('generate_ticket')
-
-
-
-def generate_ticket(request):
-    if request.method == 'POST':
-        ticket_number = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
-        ticket_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=12))
-
-
-        full_name = request.POST.get('fullName')
-        email = request.POST.get('email')
-
-
-        if full_name:
-            purchase_datetime = timezone.now()
-
-            # Create Ticket object
-            ticket = Ticket.objects.create(
-                full_name=full_name,
-                email=email,
-                ticket_number=ticket_number,
-                ticket_code=ticket_code,
-                date=purchase_datetime  #
-            )
-
-            return render(request, 'ticket_template.html', {
-                'full_name': full_name,
-                'email': email,
-                'ticket_number': ticket_number,
-                'ticket_code': ticket_code,
-                'purchase_datetime': purchase_datetime
-            })
-        else:
-            
-            error_message = "Full name is required."
-            return redirect(request, 'buy_tickets.html', {'error_message': error_message})
+      return render(request, 'ticket_template.html', {
+          'full_name': full_name,
+          'email': email,
+          'ticket_number': ticket_number,
+          'ticket_code': ticket_code,
+          'purchase_datetime': purchase_datetime
+      })
     else:
-       
-        error_message = "Invalid request method."
-        return render(request, 'buy_tickets.html', {'error_message': error_message})
+      error_message = "Full name is required."
+      return redirect('buy_tickets.html', {'error_message': error_message})
+  else:
+    error_message = "Invalid request method."
+    return render(request, 'buy_tickets.html', {'error_message': error_message})
+
+
 
 def create_paypal_payment(request):
-    paypal_api_url = 'https://api-m.sandbox.paypal.com/v1/payments/payment'
+  paypal_api_url = 'https://api-m.sandbox.paypal.com/v1/payments/payment'
 
-    client_id = settings.PAYPAL_SANDBOX_CLIENT_ID
-    secret = settings.PAYPAL_SANDBOX_SECRET
+  client_id = settings.PAYPAL_SANDBOX_CLIENT_ID
+  secret = settings.PAYPAL_SANDBOX_SECRET
 
+  credentials = base64.b64encode(f"{client_id}:{secret}".encode('utf-8')).decode('utf-8')
+  headers = {
+    'Content-Type': 'application/json',
+    'Authorization': f'Basic {credentials}'
+  }
 
-    headers = {
-        'Content-Type': 'application/json',
-        'Authorization': f'Bearer {client_id}:{secret}'
+  data = {
+    'intent': 'sale',
+    'payer': {
+      'payment_method': 'paypal'
+    },
+    'transactions': [{
+      'amount': {
+        'total': '10.00',
+        'currency': 'USD'
+      }
+    }],
+    'redirect_urls': {
+      'return_url': 'http://127.0.0.1:8000/',
+      'cancel_url': 'http://127.0.0.1:8000/'
     }
+  }
 
-    data = {
-        'intent': 'sale',
-        'payer': {
-            'payment_method': 'paypal'
-        },
-        'transactions': [{
-            'amount': {
-                'total': '10.00',
-                'currency': 'USD'
-            }
-        }],
-        'redirect_urls': {
-            'return_url': 'http://127.0.0.1:8000//',
-            'cancel_url': 'http://127.0.0.1:8000//'
-        }
-    }
+  response = requests.post(paypal_api_url, headers=headers, json=data)
 
-    response = requests.post(paypal_api_url, headers=headers, json=data)
+  if response.status_code == 201:
+    payment = response.json()
+    approval_url = next(link['href'] for link in payment['links'] if link['rel'] == 'approval_url')
+    return HttpResponseRedirect(approval_url)
+  else:
+    error_message = f"Failed to create PayPal payment. Status code: {response.status_code}"
+    if response.text:
+      error_message += f"\nError details: {response.text}"
+    return HttpResponseBadRequest(error_message)
 
-    if response.status_code == 201:
-        payment = response.json()
-        approval_url = next(link['href'] for link in payment['links'] if link['rel'] == 'approval_url')
-        return HttpResponseRedirect(approval_url)
-    else:
-        return HttpResponse('Failed to create PayPal payment', status=response.status_code)
 
 @login_required
 def user_privilage(request):
@@ -330,6 +318,46 @@ def email_pattern(email):
         return False 
 
 
+@csrf_exempt
+def create_order(request):
+    url = 'https://api.sandbox.paypal.com/v2/checkout/orders'
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': f'Bearer {get_access_token()}'
+    }
+    data = {
+        "intent": "CAPTURE",
+        "purchase_units": [
+            {
+                "amount": {
+                    "currency_code": "USD",
+                    "value": "100.00"
+                }
+            }
+        ]
+    }
+    response = requests.post(url, json=data, headers=headers)
 
 
+    if response.status_code == 201:
+        return JsonResponse(response.json(), safe=False)
+    else:
+        return JsonResponse({'error': 'Failed to create order'}, status=500)
+
+def get_access_token():
+    url = 'https://api.sandbox.paypal.com/v1/oauth2/token'
+    data = {
+        'grant_type': 'client_credentials'
+    }
+    auth = (os.environ.get('PAYPAL_CLIENT_ID'), os.environ.get('PAYPAL_CLIENT_SECRET'))
+    response = requests.post(url, data=data, auth=auth)
+    if response.status_code == 200:
+        return response.json()['access_token']
+    else:
+        return None
+
+def checkout(request):
+    print(request.user)
+
+    return render(request, 'checkout.html')
 

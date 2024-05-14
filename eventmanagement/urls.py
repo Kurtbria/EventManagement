@@ -11,7 +11,7 @@ urlpatterns = [
     path('buy_tickets',views.buy_tickets,name='buy_tickets'),
     path('credit_card',views.credit_card,name='credit_card'),
     path('ticket',views.ticket,name='ticket'),
-    path('create_checkout_session',views.create_checkout_session,name='create_checkout_session'),
+    #path('create_checkout_session',views.create_checkout_session,name='create_checkout_session'),
     path('initiate_payment',views.initiate_payment,name='initiate_payment'),
     path('ticket',views.ticket,name='ticket'),
     path('generate_ticket/', views.generate_ticket, name='generate_ticket'),
@@ -22,6 +22,8 @@ urlpatterns = [
     path('charge',views.charge,name='charge'),
     path('charge/success/', views.charge_success, name='charge_success'),
     path('charge/error/', views.charge_error, name='charge_error'),
+    path('create_order',views.create_order, name='create_order'),
+    path('checkout',views.checkout,name='checkout')
 
 ]
 
