@@ -1,17 +1,18 @@
 from django.contrib import admin
 from django.urls import path, include
 from . import views 
-
+#from eventmanagement.views import SigninView 
 urlpatterns = [
     path('', views.home, name ='home'),
     path('signup',views.signup, name='signup'),
-    path('signin',views.signin, name='signin'),
+    #path('signin/', SigninView.as_view(), name='signin'),
+    path('user_login',views.user_login,name='user_login'),
     path('events',views.events,name='events'),
     path('list_events',views.list_events,name='list_events'),
     path('buy_tickets',views.buy_tickets,name='buy_tickets'),
     path('credit_card',views.credit_card,name='credit_card'),
     path('ticket',views.ticket,name='ticket'),
-    path('create_checkout_session',views.create_checkout_session,name='create_checkout_session'),
+    path('stripe_checkout',views.stripe_checkout,name='stripe_checkout'),
     path('initiate_payment',views.initiate_payment,name='initiate_payment'),
     path('ticket',views.ticket,name='ticket'),
     path('generate_ticket/', views.generate_ticket, name='generate_ticket'),

@@ -103,7 +103,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-LOGGING = {
+'''LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'handlers': {
@@ -119,7 +119,7 @@ LOGGING = {
             'propagate': True,
         },
     },
-}
+}'''
 
 
 # Internationalization

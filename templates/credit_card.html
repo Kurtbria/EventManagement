@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Payment Form</title>
-  <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico.jpg' %}">
 </head>
 <body>
   <form id="payment-form" action="{% url 'charge' %}" method="POST">
@@ -68,7 +68,7 @@
             Swal.fire({
               icon: 'error',
               title: 'Error',
-              text: 'An error occurred while processing your payment.'
+              text: 'An error occurred while processing your request.'
             });
           });
         }

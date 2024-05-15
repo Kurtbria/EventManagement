@@ -5,7 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}Event Management System{% endblock %}</title>
-  <link rel="stylesheet" href="{% static 'css/signin.css' %}">
+  <link rel="stylesheet" href="{% static 'css/login.css' %}">
+  <link rel="icon" type="x-icon" href="{% static 'images/favicon.ico.jpg'}">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
@@ -29,25 +30,6 @@
   </div>
 </div>
 
-<div class="modal" id="loginSuccessModal" tabindex="-1" role="dialog" aria-labelledby="loginSuccessModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="loginSuccessModalLabel">Login Successful!</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p>You have been successfully logged in.</p>
-      </div>
-      <div class="modal-footer">
-        <a href="{% url 'home' %}" class="btn btn-primary">Go to Home</a>
-      </div>
-    </div>
-  </div>
-</div>
-
 <div class="modal" id="loginErrorModal" tabindex="-1" role="dialog" aria-labelledby="loginErrorModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -58,7 +40,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <p>Invalid username or password. Please try again.</p>
+        <p id="errorMessage">Invalid username or password. Please try again.</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -77,18 +59,18 @@
       var formData = $(this).serialize();
       $.ajax({
         type: 'POST',
-        url: '{% url "signin" %}',
+        url: '{% url "user_login" %}',
         data: formData,
         success: function(response) {
           if (response.success) {
-            $('#loginSuccessModal').modal('show');
-            // Redirect to home only on successful login (optional)
-            // window.location.href = '{% url "home" %}';
+            window.location.href = '{% url "home" %}';
           } else {
+            $('#errorMessage').text(response.error_message);
             $('#loginErrorModal').modal('show');
           }
         },
         error: function(xhr, status, error) {
+          $('#errorMessage').text('An error occurred. Please try again later.');
           $('#loginErrorModal').modal('show');
         }
       });

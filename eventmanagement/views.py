@@ -1,3 +1,4 @@
+# imports unrelated to views
 import stripe
 import requests
 import random
@@ -5,6 +6,13 @@ import string
 import io, re, os
 import datetime
 import base64
+from django.views.generic import View
+from PIL import Image, ImageDraw, ImageFont
+from django.contrib.auth.forms import UserCreationForm
+from .models import Ticket
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
+from .paypal_client import PayPalClient
 from django.utils import timezone
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, auth
@@ -14,14 +22,8 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.conf import settings
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.urls import reverse
-from PIL import Image, ImageDraw, ImageFont
-from django.contrib.auth.forms import UserCreationForm
-from .models import Ticket
-from django.views.decorators.http import require_POST
-from django.views.decorators.csrf import csrf_exempt
-from .paypal_client import PayPalClient
+
+
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 def home(request):
@@ -55,30 +57,32 @@ def signup(request):
         return redirect('signin')
 
     return render(request, 'signup.html')
-
-def signin(request):
+    
+@csrf_exempt
+def user_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
 
         user = authenticate(request, username=username, password=password)
-
+        
         if user is not None:
             login(request, user)
-            return JsonResponse({'success': True})
+            return redirect('/')  
         else:
-            return JsonResponse({'success': False})
+            return render(request, 'login.html', {'error_message': 'Invalid username or password'})
 
-    return JsonResponse({'success': False, 'error': 'Invalid request method'})
-
+    return render(request, 'login.html')
 
 
 def signout(request):
     logout(request)
+
     return redirect('home')  
 
 def events(request):
     print(request.user)
+    
     return render(request, 'events.html', {'events': events})
 
 def list_events(request):
@@ -170,28 +174,7 @@ def payment_cancel(request):
     return render(request, 'payment_cancel.html')
 
 
-@require_POST 
-def create_checkout_session(request):
-    if request.method=='POST':
-        session = stripe.checkout.Session.create(
-            payment_method_types=['card'],
-            line_items=[{
-                'price_data': {
-                    'currency': 'usd',
-                    'product_data': {
-                        'name': 'Virtual Ticket',
-                    },
-                    'unit_amount': 100,  
-                },
-                'quantity': 1,
-            }],
-            mode='payment',
-            success_url=request.build_absolute_uri(success_url),
-            cancel_url=request.build_absolute_uri(reverse('buy_tickets'))
-        )
 
-    
-    return redirect(session.url, code=303)
 
 def payment_success(request):
     return redirect('generate_ticket')
@@ -345,4 +328,37 @@ def checkout(request):
     print(request.user)
 
     return render(request, 'checkout.html')
+
+def stripe_checkout(request):
+    if request.method == 'POST':
+        try:
+            session = stripe.checkout.Session.create(
+                payment_method_types=['card'],
+                line_items=[{
+                    'price_data': {
+                        'currency': 'usd',
+                        'product_data': {
+                            'name': 'Virtual Ticket',
+                        },
+                        'unit_amount': 100,  # Amount in cents
+                    },
+                    'quantity': 1,
+                }],
+                mode='payment',
+                # URL where the user will be redirected after successful payment
+                success_url=request.build_absolute_uri(reverse('payment_success')),
+                # URL where the user will be redirected after canceling the payment
+                cancel_url=request.build_absolute_uri(reverse('payment_cancel'))
+            )
+            # Redirect the user to the Stripe Checkout page
+            return redirect(session.url, code=303)
+        except Exception as e:
+            # Log the error or display it in the console
+            print(e)
+            # Redirect to an error page or display an error message to the user
+            return redirect(reverse('error_page'))
+    else:
+        # Handle the case where the request method is not POST
+        # For example, redirect to the home page or display an error message
+        return redirect(reverse('home'))
 

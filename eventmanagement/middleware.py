@@ -1,4 +1,4 @@
-from django.utils.deprecation import MiddlewareMixin
+'''from django.utils.deprecation import MiddlewareMixin
 from .models import UserActivity, UserRecord
 from django.utils.deprecation import MiddlewareMixin
 import logging
@@ -20,5 +20,5 @@ class UserActivityMiddleware(MiddlewareMixin):
         print("User Agent:", user_agent)
         print("IP Address:", ip_address)
         print("Request URL:", request_url)
-        print("HTTP Method:", http_method)
+        print("HTTP Method:", http_method)'''
 

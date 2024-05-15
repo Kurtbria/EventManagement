@@ -15,7 +15,7 @@ class Ticket(models.Model):
         return f'{self.full_name} - Ticket: {self.ticket_number}'
 
 
-class UserActivity(models.Model):
+'''class UserActivity(models.Model):
     user_agent = models.CharField(max_length=255, blank=True, null=True)
     ip_address = models.CharField(max_length=45, blank=True, null=True)
     request_url = models.CharField(max_length=255, blank=True, null=True)
@@ -26,7 +26,7 @@ class UserActivity(models.Model):
         return f"User Activity - {self.request_url}"
 
     class Meta:
-        verbose_name_plural = "User Activities"
+        verbose_name_plural = "User Activities"'''
 
 
 
