@@ -56,24 +56,20 @@ def signup(request):
 
     return render(request, 'signup.html')
 
-
 def signin(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        
-        
+
         user = authenticate(request, username=username, password=password)
-        
+
         if user is not None:
-            
             login(request, user)
-            return redirect('home') 
+            return JsonResponse({'success': True})
         else:
-           
-            messages.error(request, 'Invalid username or password. Please try again.')
-            return redirect('signin')
-    return render(request, 'signin.html')
+            return JsonResponse({'success': False})
+
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
 
 
@@ -237,7 +233,8 @@ def generate_ticket(request):
     return render(request, 'buy_tickets.html', {'error_message': error_message})
 
 
-
+@require_POST
+@login_required
 def create_paypal_payment(request):
   paypal_api_url = 'https://api-m.sandbox.paypal.com/v1/payments/payment'
 
