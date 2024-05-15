@@ -1,4 +1,3 @@
-# imports unrelated to views
 import stripe
 import requests
 import random
@@ -21,7 +20,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.conf import settings
-from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
+from django.http import HttpResponseBadRequest, HttpResponseRedirect, JsonResponse, HttpResponse
 
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -345,20 +344,14 @@ def stripe_checkout(request):
                     'quantity': 1,
                 }],
                 mode='payment',
-                # URL where the user will be redirected after successful payment
+
                 success_url=request.build_absolute_uri(reverse('payment_success')),
-                # URL where the user will be redirected after canceling the payment
                 cancel_url=request.build_absolute_uri(reverse('payment_cancel'))
             )
-            # Redirect the user to the Stripe Checkout page
             return redirect(session.url, code=303)
         except Exception as e:
-            # Log the error or display it in the console
             print(e)
-            # Redirect to an error page or display an error message to the user
             return redirect(reverse('error_page'))
     else:
-        # Handle the case where the request method is not POST
-        # For example, redirect to the home page or display an error message
         return redirect(reverse('home'))
 
