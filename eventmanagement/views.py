@@ -12,7 +12,7 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import Ticket
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
-from .paypal_client import PayPalClient
+#from .paypal_client import PayPalClient
 from django.utils import timezone
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, auth
