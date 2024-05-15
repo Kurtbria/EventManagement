@@ -49,7 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'eventmanagement.middleware.UserActivityMiddleware',
+    #'eventmanagement.middleware.UserActivityMiddleware',
 
 ]
 
@@ -149,3 +149,6 @@ PAYPAL_SANDBOX_SECRET = '#'
 
 CONSUMER_KEY = '#'
 CONSUMER_SECRET = '#'
+SHORTCODE = 'your_shortcode'
+PASSKEY = 'your_passkey'
+INITIATE_URL = '#'

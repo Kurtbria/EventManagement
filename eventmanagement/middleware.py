@@ -21,3 +21,4 @@ class UserActivityMiddleware(MiddlewareMixin):
         print("IP Address:", ip_address)
         print("Request URL:", request_url)
         print("HTTP Method:", http_method)
+

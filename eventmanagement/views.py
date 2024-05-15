@@ -22,19 +22,7 @@ from .models import Ticket
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 from .paypal_client import PayPalClient
-
-
 stripe.api_key = settings.STRIPE_SECRET_KEY
-
-
-CONSUMER_KEY = 'your_consumer_key'
-CONSUMER_SECRET = 'your_consumer_secret'
-SHORTCODE = 'your_shortcode'
-PASSKEY = 'your_passkey'
-INITIATE_URL = 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest'
-
-PAYPAL_SANDBOX_CLIENT_ID = 'ARJkQAegMlMwFPfbjX5-7VMsuM7QLXgfAQMXM2rNE0r-G9Gs-FA_LO7REEZjVfqClc2C-lb7zpuHAFTi'
-PAYPAL_SANDBOX_SECRET = 'EKi2gCk9rSdvQSh5_59NPoCYbJWPRiirBvc5dJM_bJ4HKg3snkcKo2JqpMjUpGXjsqa5yRJq6m4Avumq'
 
 def home(request):
     print(request.user)
@@ -126,7 +114,7 @@ def charge(request):
             
             return render(request, 'charge_error.html', {'error': e})
     else:
-        # Render the payment form
+       
         return render(request, 'payment_form.html')
 
 def charge_success(request):
@@ -186,7 +174,7 @@ def payment_cancel(request):
     return render(request, 'payment_cancel.html')
 
 
-'''@require_POST 
+@require_POST 
 def create_checkout_session(request):
     if request.method=='POST':
         session = stripe.checkout.Session.create(
@@ -207,7 +195,7 @@ def create_checkout_session(request):
         )
 
     
-    return redirect(session.url, code=303)'''
+    return redirect(session.url, code=303)
 
 def payment_success(request):
     return redirect('generate_ticket')
@@ -274,8 +262,8 @@ def create_paypal_payment(request):
       }
     }],
     'redirect_urls': {
-      'return_url': 'http://127.0.0.1:8000/',
-      'cancel_url': 'http://127.0.0.1:8000/'
+      'return_url': '#',
+      'cancel_url': '#'
     }
   }
 
