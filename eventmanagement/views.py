@@ -105,7 +105,7 @@ def charge(request):
             charge = stripe.Charge.create(
                 amount=1000,  
                 currency='usd',
-                description='Example charge',
+                description='Event Payment',
                 source=token,
             )
             
@@ -115,7 +115,7 @@ def charge(request):
             return render(request, 'charge_error.html', {'error': e})
     else:
        
-        return render(request, 'payment_form.html')
+        return render(request, 'credit_card.html')
 
 def charge_success(request):
     return render(request, 'charge_success.html')
