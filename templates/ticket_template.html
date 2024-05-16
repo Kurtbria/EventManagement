@@ -6,14 +6,13 @@
     <title>Ticket</title>
     <link rel="icon" type="x-icon" href="{% static 'images/favion.ico.jpg'}">
     <style>
-        /* Ticket styles */
         body {
             background-image: url('https://simplynoted.com/cdn/shop/articles/050eef32fe16075ac9a3310a1d310593_1200x1200.jpg?v=1652231425'); /* Path to your background image */
             background-size: cover;
             background-repeat: no-repeat;
             background-attachment: fixed;
             background-position: center;
-            font-family: Arial, sans-serif; /* Use a standard font */
+            font-family: Arial, sans-serif; 
             margin: 0;
             padding: 0;
         }
@@ -23,28 +22,27 @@
             align-items: center;
             height: 100vh;
         }
-        /* Ticket styles */
         .ticket {
-            max-width: 400px; /* Adjust the width as needed */
-            background-color: rgba(243, 243, 243, 0.8); /* Transparent background color */
-            border-radius: 20px; /* Increase border-radius for a rounded appearance */
+            max-width: 400px; 
+            background-color: rgba(243, 243, 243, 0.8); 
+            border-radius: 20px; 
             padding: 20px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            display: flex; /* Use flexbox to align image and content */
-            overflow: hidden; /* Ensure the ticket maintains its shape */
-            position: relative; /* Position relative for absolute positioning of download button */
+            display: flex; 
+            overflow: hidden; 
+            position: relative; 
         }
 
         .ticket-image {
-            width: 100px; /* Adjust the image size as needed */
+            width: 100px; 
             height: auto;
-            margin-right: 20px; /* Add margin for separation */
-            border-top-left-radius: 20px; /* Ensure image corner matches ticket */
+            margin-right: 20px; 
+            border-top-left-radius: 20px; 
             border-bottom-left-radius: 20px;
         }
 
         .ticket-content {
-            flex-grow: 1; /* Allow content to grow to fill available space */
+            flex-grow: 1; 
         }
 
         .ticket h2 {
