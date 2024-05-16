@@ -75,7 +75,7 @@ WSGI_APPLICATION = 'EMS.wsgi.application'
 
 
 
-DATABASES = {
+'''DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'postgres',
@@ -84,7 +84,7 @@ DATABASES = {
         'HOST': '127.0.0.1',  
         'PORT': '5432',       
     }
-}
+}'''
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -143,10 +143,18 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STRIPE_PUBLISHABLE_KEY = '#'
 PAYPAL_SANDBOX_CLIENT_ID = '#'
 PAYPAL_SANDBOX_SECRET = '#'
+STRIPE_PUBLISHABLE_KEY = '#'
+STRIPE_SECRET_KEY = '#'
+
+PAYPAL_SANDBOX_CLIENT_ID = '#'
+PAYPAL_SANDBOX_SECRET = '#'
 
 
 CONSUMER_KEY = '#'
 CONSUMER_SECRET = '#'
+CONSUMER_KEY = '#'
+CONSUMER_SECRET = '#'
 SHORTCODE = 'your_shortcode'
 PASSKEY = 'your_passkey'
+INITIATE_URL = '#'
 INITIATE_URL = '#'

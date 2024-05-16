@@ -1,4 +1,4 @@
-import os
+'''import os
 
 class PayPalClient:
     @staticmethod
@@ -7,4 +7,4 @@ class PayPalClient:
             client_id=os.environ.get("PAYPAL_CLIENT_ID"),
             client_secret=os.environ.get("PAYPAL_CLIENT_SECRET")
         )
-        return PayPalHttpClient(environment)
+        return PayPalHttpClient(environment)'''
