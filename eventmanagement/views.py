@@ -29,7 +29,7 @@ def home(request):
     print(request.user)
     return render(request, 'base.html')
 
-
+@require_POST
 def signup(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -284,32 +284,35 @@ def email_pattern(email):
     else:
         return False 
 
-
+@require_POST
 @csrf_exempt
 def create_order(request):
-    url = 'https://api.sandbox.paypal.com/v2/checkout/orders'
-    headers = {
-        'Content-Type': 'application/json',
-        'Authorization': f'Bearer {get_access_token()}'
-    }
-    data = {
-        "intent": "CAPTURE",
-        "purchase_units": [
-            {
-                "amount": {
-                    "currency_code": "USD",
-                    "value": "100.00"
+    if request.method == 'POST':
+        url = 'https://api.sandbox.paypal.com/v2/checkout/orders'
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {get_access_token()}'
+        }
+        data = {
+            "intent": "CAPTURE",
+            "purchase_units": [
+                {
+                    "amount": {
+                        "currency_code": "USD",
+                        "value": "100.00"
+                    }
                 }
-            }
-        ]
-    }
-    response = requests.post(url, json=data, headers=headers)
+            ]
+        }
+        response = requests.post(url, json=data, headers=headers)
 
 
-    if response.status_code == 201:
-        return JsonResponse(response.json(), safe=False)
-    else:
-        return JsonResponse({'error': 'Failed to create order'}, status=500)
+        if response.status_code == 201:
+            return JsonResponse(response.json(), safe=False)
+        else:
+            return JsonResponse({'error': 'Failed to create order'}, status=500)
+
+    return render(request, '/')
 
 def get_access_token():
     url = 'https://api.sandbox.paypal.com/v1/oauth2/token'
@@ -354,4 +357,3 @@ def stripe_checkout(request):
             return redirect(reverse('error_page'))
     else:
         return redirect(reverse('home'))
-
