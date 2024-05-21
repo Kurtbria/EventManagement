@@ -75,7 +75,7 @@ WSGI_APPLICATION = 'EMS.wsgi.application'
 
 
 
-DATABASES = {
+'''DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': '#',
@@ -84,7 +84,7 @@ DATABASES = {
         'HOST': '#',  
         'PORT': '#',       
     }
-}
+}'''
 
 
 AUTH_PASSWORD_VALIDATORS = [

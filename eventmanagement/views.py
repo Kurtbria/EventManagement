@@ -357,3 +357,14 @@ def stripe_checkout(request):
             return redirect(reverse('error_page'))
     else:
         return redirect(reverse('home'))
+
+# views.py
+from django.contrib.auth.models import User
+from django.shortcuts import render
+
+def list_users(request):
+    # Fetch all users from the database
+    users = User.objects.all()
+    
+    # Pass the users to the template context
+    return render(request, 'users.html', {'users': users})

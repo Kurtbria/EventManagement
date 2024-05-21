@@ -30,6 +30,4 @@ class Ticket(models.Model):
 
 
 
-
-
   

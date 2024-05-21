@@ -24,7 +24,8 @@ urlpatterns = [
     path('charge/success/', views.charge_success, name='charge_success'),
     path('charge/error/', views.charge_error, name='charge_error'),
     path('create_order',views.create_order, name='create_order'),
-    path('checkout',views.checkout,name='checkout')
+    path('checkout',views.checkout,name='checkout'),
+    path('list_users',views.list_users,name='list_users'),
 
 ]
 
