@@ -29,7 +29,7 @@ def home(request):
     print(request.user)
     return render(request, 'base.html')
 
-@require_POST
+
 def signup(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -64,12 +64,14 @@ def user_login(request):
         password = request.POST.get('password')
 
         user = authenticate(request, username=username, password=password)
-        
-        if user is not None:
-            login(request, user)
-            return redirect('/')  
-        else:
+        try:
+            if user is not None:
+                login(request, user)
+                return redirect('users.html')  
+                
+        except:
             return render(request, 'login.html', {'error_message': 'Invalid username or password'})
+
 
     return render(request, 'login.html')
 
@@ -191,7 +193,7 @@ def generate_ticket(request):
     if full_name:
       purchase_datetime = timezone.now()
 
-      # Create Ticket object
+      
       ticket = Ticket.objects.create(
           full_name=full_name,
           email=email,
@@ -358,13 +360,8 @@ def stripe_checkout(request):
     else:
         return redirect(reverse('home'))
 
-# views.py
-from django.contrib.auth.models import User
-from django.shortcuts import render
-
 def list_users(request):
-    # Fetch all users from the database
+
     users = User.objects.all()
-    
-    # Pass the users to the template context
+
     return render(request, 'users.html', {'users': users})
