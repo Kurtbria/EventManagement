@@ -38,7 +38,7 @@
             </div>
             <button type="submit" class="btn btn-primary">Signup</button>
         </form>
-        <p>Already have an account? <a href="{% url 'user_login' %}">Sign in</a></p>
+        <p>Already have an account? <a href="{% url 'user_signin' %}">Sign in</a></p>
     </main>
 
     <!-- Bootstrap Modal for Error Messages -->
@@ -65,10 +65,10 @@
                 var formData = $(this).serialize();
                 $.ajax({
                     type: 'POST',
-                    url: '{% url "signup" %}',
+                    url: '{% url "user_signup" %}',
                     data: formData,
                     success: function(response) {
-                        window.location.href = '{% url "user_login" %}';
+                        window.location.href = '{% url "user_signin" %}';
                     },
                     error: function(xhr, status, error) {
                         var errors = xhr.responseJSON.errors; // Get error messages from JSON response

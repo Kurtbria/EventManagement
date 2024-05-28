@@ -30,7 +30,7 @@ def home(request):
     return render(request, 'base.html')
 
 
-def signup(request):
+def user_signup(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         email = request.POST.get('email')
@@ -58,7 +58,7 @@ def signup(request):
     return render(request, 'signup.html')
     
 @csrf_exempt
-def user_login(request):
+def user_signin(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -98,6 +98,7 @@ def credit_card(request):
     if request.method == 'POST':
         return render(request, 'credit_card.html')
     return JsonResponse({'status': 'Method not allowed'})
+
 def charge(request):
     if request.method == 'POST':
         token = request.POST.get('stripeToken')
@@ -163,9 +164,7 @@ def callback(request):
 
 
 def payment_process(request):
-
     amount = 1000  
-
     return render(request, 'payment_process.html', {'amount': amount})
 
 def payment_success(request):
@@ -173,9 +172,6 @@ def payment_success(request):
 
 def payment_cancel(request):
     return render(request, 'payment_cancel.html')
-
-
-
 
 def payment_success(request):
     return redirect('generate_ticket')
@@ -219,6 +215,7 @@ def generate_ticket(request):
 
 @require_POST
 @login_required
+@csrf_exempt
 def create_paypal_payment(request):
   paypal_api_url = 'https://api-m.sandbox.paypal.com/v1/payments/payment'
 

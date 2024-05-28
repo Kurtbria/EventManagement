@@ -4,9 +4,9 @@ from . import views
 #from eventmanagement.views import SigninView 
 urlpatterns = [
     path('', views.home, name ='home'),
-    path('signup',views.signup, name='signup'),
+    path('user_signup',views.user_signup, name='user_signup'),
     #path('signin/', SigninView.as_view(), name='signin'),
-    path('user_login',views.user_login,name='user_login'),
+    path('user_signin',views.user_signin,name='user_signin'),
     path('events',views.events,name='events'),
     path('list_events',views.list_events,name='list_events'),
     path('buy_tickets',views.buy_tickets,name='buy_tickets'),
