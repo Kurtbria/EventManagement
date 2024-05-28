@@ -95,9 +95,9 @@ def buy_tickets(request):
 
 def credit_card(request):
     print(request.user)
-    
-    return render(request, 'credit_card.html')
-
+    if request.method == 'POST':
+        return render(request, 'credit_card.html')
+    return JsonResponse({'status': 'Method not allowed'})
 def charge(request):
     if request.method == 'POST':
         token = request.POST.get('stripeToken')
