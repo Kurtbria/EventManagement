@@ -10,7 +10,7 @@ from PIL import Image, ImageDraw, ImageFont
 from django.contrib.auth.forms import UserCreationForm
 from .models import Ticket
 from django.views.decorators.http import require_POST
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
 #from .paypal_client import PayPalClient
 from django.utils import timezone
 from django.shortcuts import render, redirect
@@ -29,7 +29,7 @@ def home(request):
     print(request.user)
     return render(request, 'base.html')
 
-
+@csrf_exempt
 def user_signup(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -75,15 +75,12 @@ def user_signin(request):
 
     return render(request, 'login.html')
 
-
 def signout(request):
     logout(request)
-
     return redirect('home')  
 
 def events(request):
-    print(request.user)
-    
+    print(request.user)   
     return render(request, 'events.html', {'events': events})
 
 def list_events(request):
@@ -93,11 +90,12 @@ def list_events(request):
 def buy_tickets(request):
     return render(request, 'buy_tickets.html')
 
+
 def credit_card(request):
     print(request.user)
     if request.method == 'POST':
         return render(request, 'credit_card.html')
-    return JsonResponse({'status': 'Method not allowed'})
+    return JsonResponse({'status': 'Method not allowed'}, code=400)
 
 def charge(request):
     if request.method == 'POST':
@@ -148,10 +146,8 @@ def initiate_payment(request):
 
 def get_access_token():
     url = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials'
-
     response = requests.get(url, auth=(CONSUMER_KEY, CONSUMER_SECRET))
     data = response.json()
-
     access_token = data.get('access_token')
     return access_token
 
@@ -159,7 +155,6 @@ def get_access_token():
 def callback(request):
     if request.method == 'POST':
         return JsonResponse({"success": True})
-
     return JsonResponse({"error": "Only POST requests are allowed"})
 
 
@@ -188,8 +183,7 @@ def generate_ticket(request):
 
     if full_name:
       purchase_datetime = timezone.now()
-
-      
+    
       ticket = Ticket.objects.create(
           full_name=full_name,
           email=email,
@@ -358,7 +352,5 @@ def stripe_checkout(request):
         return redirect(reverse('home'))
 
 def list_users(request):
-
     users = User.objects.all()
-
     return render(request, 'users.html', {'users': users})

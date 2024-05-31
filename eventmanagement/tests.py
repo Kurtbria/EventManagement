@@ -10,7 +10,7 @@ class SignUpViewTest(TestCase):
         self.client = Client()
 
     def test_signup_post_success(self):
-        response = self.client.post(reverse('signup'), {
+        response = self.client.post(reverse('user_signup'), {
             'username': 'testuser',
             'email': 'test@example.com',
             'password': 'testpassword',
@@ -57,7 +57,7 @@ class SignUpViewTest(TestCase):
             'password': 'testpassword',
             'confirm_password': 'testpassword'
         })
-        self.assertRedirects(response, reverse('signup'))
+        self.assertRedirects(response, reverse('user_signup'))
         self.assertFalse(User.objects.filter(username='testuser').exists())
 
 
@@ -75,3 +75,5 @@ class GenerateTicketViewTest(TestCase):
         self.assertEqual(response.context_data['email'], 'test@example.com')
         self.assertTrue(response.context_data['ticket_number'])
         self.assertTrue(response.context_data['ticket_code'])
+
+
