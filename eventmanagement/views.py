@@ -5,6 +5,7 @@ import string
 import io, re, os
 import datetime
 import base64
+from .forms import *
 from django.views.generic import View
 from PIL import Image, ImageDraw, ImageFont
 from django.contrib.auth.forms import UserCreationForm
@@ -354,3 +355,8 @@ def stripe_checkout(request):
 def list_users(request):
     users = User.objects.all()
     return render(request, 'users.html', {'users': users})
+
+'''def rear_view(request):
+    context = {}
+    context['form']= InputForm()
+    return render(request, 'rear.html', context)'''
