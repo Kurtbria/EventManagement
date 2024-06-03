@@ -1,5 +1,5 @@
 '''from django import forms
-#signinbackup code
+#signin/up(backup code)
 class InputForm(forms.Form):
 
     first_name = forms.CharField(max_length = 200)
