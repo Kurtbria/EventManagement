@@ -54,7 +54,7 @@ def user_signup(request):
         user = User.objects.create_user(username=username, email=email, password=password)
 
         messages.success(request, 'Account created successfully. Please login.')
-        return redirect('signin')
+        return redirect('user_signin')
 
     return render(request, 'signup.html')
     
@@ -65,15 +65,11 @@ def user_signin(request):
         password = request.POST.get('password')
 
         user = authenticate(request, username=username, password=password)
-        try:
-            if user is not None:
-                login(request, user)
-                return redirect('users.html')  
-                
-        except:
-            return render(request, 'login.html', {'error_message': 'Invalid username or password'})
-
-
+        if user is not None:
+            login(request, user)
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'Success': False, 'error_message': 'Invalid username or password'})
     return render(request, 'login.html')
 
 def signout(request):
