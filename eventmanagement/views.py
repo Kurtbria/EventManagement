@@ -38,24 +38,19 @@ def user_signup(request):
         password = request.POST.get('password')
         confirm_password = request.POST.get('confirm_password')
 
-        errors = []
 
-        if not (username and email and password and confirm_password):
-            errors.append('All fields are required.')
+        if not username or not email or not password or not confirm_password:
+            return JsonResponse({'success': False, 'error_message': 'All Fields are required'}, status=400)
         if password != confirm_password:
-            errors.append('Passwords do not match.')
+            return JsonResponse({'success': False, 'error_message': 'Passwords do not match'}, status=400)
         if User.objects.filter(username=username).exists():
-            errors.append('Username is already taken.')
+            return JsonResponse({'Success': False, 'error_message': 'Username Already exists'}, status=400)
         if User.objects.filter(email=email).exists():
-            errors.append('Email is already registered.')
-
-        if errors:
-            return JsonResponse({'errors': errors}, status=400)
+            return JsonResponse({'success': False, 'error_message': 'Email is already registered'})
+        
         user = User.objects.create_user(username=username, email=email, password=password)
-
-        messages.success(request, 'Account created successfully. Please login.')
-        return redirect('user_signin')
-
+        user.save()
+        return JsonResponse({'success': True}, status=200)
     return render(request, 'signup.html')
     
 @csrf_exempt

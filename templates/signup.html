@@ -2,94 +2,99 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signup - Event Management System</title>
-    <link rel="stylesheet" href="{% static 'css/signup.css' %}">
-    <link rel="icon" type="x-icon" href="{% static 'images/favicon.ico.jpg' %}">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/@uiball/loaders@1.0.0/dist/umd/bundle.min.css">
-    <script src="https://unpkg.com/@uiball/loaders@1.0.0/dist/umd/bundle.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signup - Event Management System</title>
+  <link rel="stylesheet" href="{% static 'css/signup.css' %}">
+  <link rel="icon" type="x-icon" hre="{% static 'images/favicon.ico.jpg' %}">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/@uiball/loaders@1.0.0/dist/umd/bundle.min.css">
+  <script src="https://unpkg.com/@uiball/loaders@1.0.0/dist/umd/bundle.min.js"></script>
 </head>
 <body>
-    <header>
-        <h1>Signup</h1>
-    </header>
-    <main>
-        <form id="signupForm" method="post">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
-            </div>
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            <div class="form-group">
-                <label for="confirm_password">Confirm Password:</label>
-                <input type="password" id="confirm_password" name="confirm_password" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Signup</button>
-        </form>
-        <p>Already have an account? <a href="{% url 'user_signin' %}">Sign in</a></p>
-    </main>
+  <header>
+    <h1>Signup</h1>
+  </header>
+  <main>
+    <form id="signupForm" method="post">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      <div class="form-group">
+        <label for="confirm_password">Confirm Password:</label>
+        <input type="password" id="confirm_password" name="confirm_password" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Signup</button>
+    </form>
+    <p>Already have an account? <a href="{% url 'user_signin' %}">Sign in</a></p>
+  </main>
 
-    <div id="loader" style="display: none;">
-        <div class="uiball-spinner"></div>
-    </div>
-    <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Error</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <ul id="errorMessageList" class="list-unstyled"></ul>
-                </div>
-            </div>
+  <div id="loader" style="display: none;">
+    <div class="uiball-spinner"></div>
+  </div>
+
+  <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Error</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
+        <div class="modal-body">
+          <ul id="errorMessageList" class="list-unstyled"></ul>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <script>
-        $(document).ready(function() {
-            $('#signupForm').submit(function(event) {
-                event.preventDefault();
-                $('#loader').show(); 
-                var formData = $(this).serialize();
-                $.ajax({
-                    type: 'POST',
-                    url: '{% url "user_signup" %}',
-                    data: formData,
-                    success: function(response) {
-                        window.location.href = '{% url "user_signin" %}';
-                    },
-                    error: function(xhr, status, error) {
-                        $('#loader').hide(); 
-                        var errors = xhr.responseJSON.errors; 
-                        if (errors) {
-                            var errorMessageList = $('#errorMessageList');
-                            errorMessageList.empty(); 
-                            $.each(errors, function(index, error) {
-                                errorMessageList.append('<li>' + error + '</li>'); 
-                            });
-                            $('#errorModal').modal('show');
-                        }
-                    }
-                });
-            });
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <script>
+    $(document).ready(function() {
+      $('#signupForm').submit(function(event) {
+        event.preventDefault();
+        var formData = $(this).serialize();
+        $('#loader').show(); 
+        $.ajax({
+          type: 'POST',
+          url: '{% url "user_signup" %}',
+          data: formData,
+          success: function(response) {
+            if (response.success) {
+              window.location.href = '{% url "user_signin" %}';
+            } else {
+              $('#loader').hide(); 
+              var errors = response.error_message; 
+              var errorMessageList = $('#errorMessageList');
+              errorMessageList.empty(); 
+              errorMessageList.append('<li>' + errors + '</li>'); 
+              $('#errorModal').modal('show'); 
+            }
+          },
+          error: function(xhr, status, error) {
+            $('#loader').hide(); 
+            var errorMessageList = $('#errorMessageList');
+            errorMessageList.empty(); 
+            errorMessageList.append('<li>An error occurred. Please try again later.</li>'); 
+            $('#errorModal').modal('show');
+          }
         });
-    </script>
-    
+      });
+    });
+  </script>
 </body>
 </html>
