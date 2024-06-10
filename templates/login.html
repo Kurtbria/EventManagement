@@ -8,6 +8,8 @@
   <link rel="stylesheet" href="{% static 'css/login.css' %}">
   <link rel="icon" type="x-icon" href="{% static 'images/favicon.ico.jpg' %}">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/@uiball/loaders@1.0.0/dist/umd/bundle.min.css">
+  <script src="https://unpkg.com/@uiball/loaders@1.0.0/dist/umd/bundle.min.js"></script>
 </head>
 <body>
 
@@ -28,6 +30,11 @@
     </form>
     <p>Don't have an account? <a href="{% url 'user_signup' %}">Register</a></p>
   </div>
+</div>
+
+
+<div id="loader" style="display: none;">
+  <div class="uiball-spinner"></div>
 </div>
 
 <div class="modal" id="loginErrorModal" tabindex="-1" role="dialog" aria-labelledby="loginErrorModalLabel" aria-hidden="true">
@@ -57,6 +64,7 @@
     $('#loginForm').submit(function(event) {
       event.preventDefault();
       var formData = $(this).serialize();
+      $('#loader').show(); 
       $.ajax({
         type: 'POST',
         url: '{% url "user_signin" %}',
@@ -65,11 +73,13 @@
           if (response.success) {
             window.location.href = '{% url "home" %}';
           } else {
+            $('#loader').hide(); 
             $('#errorMessage').text(response.error_message);
             $('#loginErrorModal').modal('show');
           }
         },
         error: function(xhr, status, error) {
+          $('#loader').hide(); 
           $('#errorMessage').text('An error occurred. Please try again later.');
           $('#loginErrorModal').modal('show');
         }
