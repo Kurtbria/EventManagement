@@ -1,5 +1,4 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,11 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Signup - Event Management System</title>
     <link rel="stylesheet" href="{% static 'css/signup.css' %}">
-    <link rel="icon" type="x-icon" hre="{% static 'images/favicon.ico.jpg' %}">
+    <link rel="icon" type="x-icon" href="{% static 'images/favicon.ico.jpg' %}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/@uiball/loaders@1.0.0/dist/umd/bundle.min.css">
+    <script src="https://unpkg.com/@uiball/loaders@1.0.0/dist/umd/bundle.min.js"></script>
 </head>
 <body>
     <header>
@@ -41,7 +42,9 @@
         <p>Already have an account? <a href="{% url 'user_signin' %}">Sign in</a></p>
     </main>
 
-    <!-- Bootstrap Modal for Error Messages -->
+    <div id="loader" style="display: none;">
+        <div class="uiball-spinner"></div>
+    </div>
     <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -62,6 +65,7 @@
         $(document).ready(function() {
             $('#signupForm').submit(function(event) {
                 event.preventDefault();
+                $('#loader').show(); 
                 var formData = $(this).serialize();
                 $.ajax({
                     type: 'POST',
@@ -71,14 +75,15 @@
                         window.location.href = '{% url "user_signin" %}';
                     },
                     error: function(xhr, status, error) {
-                        var errors = xhr.responseJSON.errors; // Get error messages from JSON response
+                        $('#loader').hide(); 
+                        var errors = xhr.responseJSON.errors; 
                         if (errors) {
                             var errorMessageList = $('#errorMessageList');
-                            errorMessageList.empty(); // Clear previous error messages
+                            errorMessageList.empty(); 
                             $.each(errors, function(index, error) {
-                                errorMessageList.append('<li>' + error + '</li>'); // Append error messages to modal
+                                errorMessageList.append('<li>' + error + '</li>'); 
                             });
-                            $('#errorModal').modal('show'); // Show modal with error messages
+                            $('#errorModal').modal('show');
                         }
                     }
                 });
