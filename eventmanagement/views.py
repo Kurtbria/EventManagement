@@ -30,6 +30,10 @@ def home(request):
     print(request.user)
     return render(request, 'base.html')
 
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.models import User
+
 @csrf_exempt
 def user_signup(request):
     if request.method == 'POST':
@@ -38,20 +42,20 @@ def user_signup(request):
         password = request.POST.get('password')
         confirm_password = request.POST.get('confirm_password')
 
-
         if not username or not email or not password or not confirm_password:
-            return JsonResponse({'success': False, 'error_message': 'All Fields are required'}, status=400)
+            return JsonResponse({'success': False, 'error_message': 'All fields are required'}, status=400)
         if password != confirm_password:
             return JsonResponse({'success': False, 'error_message': 'Passwords do not match'}, status=400)
         if User.objects.filter(username=username).exists():
-            return JsonResponse({'Success': False, 'error_message': 'Username Already exists'}, status=400)
+            return JsonResponse({'success': False, 'error_message': 'Username already exists'}, status=400)
         if User.objects.filter(email=email).exists():
-            return JsonResponse({'success': False, 'error_message': 'Email is already registered'})
+            return JsonResponse({'success': False, 'error_message': 'Email is already registered'}, status=400)
         
         user = User.objects.create_user(username=username, email=email, password=password)
         user.save()
         return JsonResponse({'success': True}, status=200)
     return render(request, 'signup.html')
+
     
 @csrf_exempt
 def user_signin(request):
