@@ -6,7 +6,7 @@ class SignupViewTest(TestCase):
     def setUp(self):
         self.client = Client()
     
-    def test_signuo_post_success(self):
+    def test_signup_post_success(self):
         response = self.client.post(reverse('user_signup'), {
             'username': 'testuser',
             'email': 'test@example.com',
@@ -23,4 +23,19 @@ class SignupViewTest(TestCase):
             'confirm_password': 'testpassword'
         })
         self.assertEqual(response.status_code, 400)
-        self.assertTrue(User.objects.filter(username='testuser').exists())
+        self.assertFalse(User.objects.filter(username='testuser').exists())
+
+class GenerateTicketViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_generate_ticket(self):
+        User.objects.create_user(username='testuser', email='test@example.com', password='testpassword')
+        self.client.login(username='testuser', password='testpassword')
+        response = self.client.post('/generate_ticket/', {'fullname': 'Test User', 'email': 'test@example.com'})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'ticket_template.html')
+        self.assertEqual(response.context['full_name'], 'Test User')
+        self.assertEqual(response.context['email'], 'test@example.com')
+        self.assertTrue(response.context['ticket_number'])
+        self.assertTrue(response.context['ticket_code'])
