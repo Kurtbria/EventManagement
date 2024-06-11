@@ -12,169 +12,104 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
 
-        header {
+        .header {
             background-color: #333;
-            color: white;
-            padding: 10px 0;
-        }
-
-        nav {
+            color: #fff;
+            padding: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 20px;
         }
 
-        nav a {
-            color: white;
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
             text-decoration: none;
-            padding: 0 15px;
+            color: #fff;
         }
 
-        nav a:hover {
-            text-decoration: underline;
-        }
-
-        .hero {
-            background: url("{% static 'images/hero-bg.jpg' %}") no-repeat center center/cover;
-            color: white;
-            text-align: center;
-            padding: 100px 20px;
-        }
-
-        .btn {
-            display: inline-block;
-            background-color: #28a745;
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-
-        .btn:hover {
-            background-color: #218838;
-        }
-
-        footer {
-            text-align: center;
-            padding: 10px 0;
-            background-color: #333;
-            color: white;
-            position: fixed;
-            width: 100%;
-            bottom: 0;
-        }
-
-        .profile-section {
-            position: relative;
+        .nav-links {
             display: flex;
-            align-items: center;
+        }
+
+        .nav-link {
+            margin-right: 20px;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .profile-container {
+            position: relative;
         }
 
         .profile-picture {
-            width: 40px;
-            height: 40px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             background-image: url("{% static 'images/default-profile.png' %}");
             background-size: cover;
             background-position: center;
             cursor: pointer;
+            margin-left: 10px;
         }
 
-        .profile-dropdown {
+        .dropdown-content {
             display: none;
             position: absolute;
-            top: 50px;
-            right: 0;
-            background-color: white;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            top: 40px;
+            right: 10px; 
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
             z-index: 1;
-            border-radius: 8px;
-            overflow: hidden;
-            width: 200px;
-        }
-
-        .profile-dropdown a,
-        .profile-dropdown form {
-            color: black;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-            transition: background-color 0.3s ease;
-        }
-
-        .profile-dropdown a:hover,
-        .profile-dropdown form:hover {
-            background-color: #f1f1f1;
-        }
-
-        .profile-dropdown form {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .profile-dropdown form input[type="file"] {
-            padding: 10px;
-            margin: 10px 0;
-        }
-
-        .profile-dropdown form button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px;
             border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+            padding: 10px;
         }
 
-        .profile-dropdown form button:hover {
-            background-color: #0056b3;
-        }
-
-        .profile-section:hover .profile-dropdown {
+        .dropdown-content a {
             display: block;
+            padding: 10px;
+            text-decoration: none;
+            color: #000; 
         }
 
-        .profile-dropdown::before {
-            content: "";
-            position: absolute;
-            top: -10px;
-            right: 20px;
-            border-width: 10px;
-            border-style: solid;
-            border-color: transparent transparent white transparent;
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+
+        .upload-input {
+            display: none;
+        }
+
+        .upload-label {
+            display: block;
+            padding: 10px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <header>
-        <nav>
-            <div>
-                <a href="/">Home</a>
-                <a href="list_events">Events</a>
-                <a href="user_signin">Signin</a>
-                <a href="user_signup">Signup</a>
-                <a href="signout">Signout</a>
-                <a href="user_privilage">Check Privilage</a>
-            </div>
-            
-            <div class="profile-section">
-                <div class="profile-picture"></div>
-                <div class="profile-dropdown">
-                    <a href="#" id="profileButton">Profile</a>
-                    <form id="profileForm" method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <input type="file" name="profile_picture" accept="image/*">
-                        <button type="submit">Upload</button>
-                    </form>
-                    <a href="#">Profile Info</a>
-                </div>
-            </div>
+    <header class="header">
+        <a href="/" class="logo">Event Management System</a>
+        <nav class="nav-links">
+            <a href="list_events" class="nav-link">Events</a>
+            <a href="user_signin" class="nav-link">Signin</a>
+            <a href="user_signup" class="nav-link">Signup</a>
+            <a href="signout" class="nav-link">Signout</a>
+            <a href="user_privilage" class="nav-link">Check Privilage</a>
         </nav>
+        <div class="profile-container" onclick="toggleDropdown(event)">
+            <div class="profile-picture"></div>
+            <div class="dropdown-content" id="dropdownContent">
+                <input type="file" id="profilePicture" class="upload-input" onchange="uploadProfilePicture(this)">
+                <label for="profilePicture" class="upload-label">Upload Profile Picture</label>
+                <a href="#">Edit Profile</a>
+                <a href="#">Change Password</a>
+                <a href="#">Logout</a>
+            </div>
+        </div>
     </header>
 
     <section class="hero">
@@ -190,10 +125,35 @@
     </footer>
 
     <script>
-        document.getElementById('profileButton').addEventListener('click', function(event) {
-            event.preventDefault();
-            document.getElementById('profileForm').style.display = 'block';
-        });
+        function toggleDropdown(event) {
+            var dropdownContent = document.getElementById("dropdownContent");
+            if (dropdownContent.style.display === "block") {
+                dropdownContent.style.display = "none";
+            } else {
+                dropdownContent.style.display = "block";
+            }
+            event.stopPropagation(); 
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.closest('.profile-container')) {
+                var dropdownContent = document.getElementById("dropdownContent");
+                dropdownContent.style.display = "none";
+            }
+        }
+
+        function uploadProfilePicture(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var profilePicture = document.querySelector('.profile-picture');
+                    profilePicture.style.backgroundImage = `url(${e.target.result})`;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
     </script>
 </body>
 </html>
+
+
