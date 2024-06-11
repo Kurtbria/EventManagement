@@ -22,6 +22,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.conf import settings
 from .forms import ProfilePictureForm
+from django.contrib.auth.forms import PasswordChangeForm
 from django.http import HttpResponseBadRequest, HttpResponseRedirect, JsonResponse, HttpResponse
 
 
@@ -161,6 +162,20 @@ def callback(request):
     if request.method == 'POST':
         return JsonResponse({"success": True})
     return JsonResponse({"error": "Only POST requests are allowed"})
+
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Your password was successfully updated!!')
+            return redirect('change_password')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = PasswordChangeForm(request.user)  
+    return render(request, 'change_password.html', {'form': form})
 
 
 def payment_process(request):
