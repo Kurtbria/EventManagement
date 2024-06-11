@@ -91,7 +91,7 @@ def credit_card(request):
     print(request.user)
     if request.method == 'POST':
         return render(request, 'credit_card.html')
-    return JsonResponse({'status': 'Method not allowed'}, code=400)
+    return JsonResponse({'status': 'Method not allowed'}, status=400)
 
 def charge(request):
     if request.method == 'POST':
