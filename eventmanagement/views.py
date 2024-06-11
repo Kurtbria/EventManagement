@@ -21,6 +21,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.conf import settings
+from .forms import ProfilePictureForm
 from django.http import HttpResponseBadRequest, HttpResponseRedirect, JsonResponse, HttpResponse
 
 
@@ -82,6 +83,18 @@ def list_events(request):
 def buy_tickets(request):
     return render(request, 'buy_tickets.html')
 
+@login_required
+def profile(request):
+    if request.method == 'POST':
+        form = ProfilePictureForm(request.POST, request.FILES)
+        if form.is_valid():
+            profile = request.user.profile
+            profile.profile_picture = form.cleaned_data['profile_picture']
+            profile.save()
+            return JsonResponse({'success': True})
+        else:
+            form = ProfilePictureForm()
+    return render(request, 'profile.html', {'form': form})
 
 def credit_card(request):
     print(request.user)

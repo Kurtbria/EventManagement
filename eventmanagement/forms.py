@@ -1,5 +1,5 @@
-'''from django import forms
-#signin/up(backup code)
+from django import forms
+'''#signin/up(backup code)
 class InputForm(forms.Form):
 
     first_name = forms.CharField(max_length = 200)
@@ -8,3 +8,7 @@ class InputForm(forms.Form):
         help_text = "Enter 6 digit roll number"
     )
     password = forms.CharField(widget = forms.PasswordInput())'''
+
+
+class ProfilePictureForm(forms.Form):
+    profile_picture = forms.ImageField()
