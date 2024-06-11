@@ -170,37 +170,37 @@ def payment_success(request):
 
 @login_required
 def generate_ticket(request):
-  if request.method == 'POST':
-    ticket_number = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
-    ticket_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=12))
+    if request.method == 'POST':
+        ticket_number = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+        ticket_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=12))
 
-    full_name = request.POST.get('fullName')
-    email = request.POST.get('email')
+        full_name = request.POST.get('fullName')
+        email = request.POST.get('email')
 
-    if full_name:
-      purchase_datetime = timezone.now()
-    
-      ticket = Ticket.objects.create(
-          full_name=full_name,
-          email=email,
-          ticket_number=ticket_number,
-          ticket_code=ticket_code,
-          date=purchase_datetime,
-      )
+        if full_name:
+            purchase_datetime = timezone.now()
+        
+            ticket = Ticket.objects.create(
+                full_name=full_name,
+                email=email,
+                ticket_number=ticket_number,
+                ticket_code=ticket_code,
+                date=purchase_datetime,
+            )
 
-      return render(request, 'ticket_template.html', {
-          'full_name': full_name,
-          'email': email,
-          'ticket_number': ticket_number,
-          'ticket_code': ticket_code,
-          'purchase_datetime': purchase_datetime
-      })
+            return render(request, 'ticket_template.html', {
+                'full_name': full_name,
+                'email': email,
+                'ticket_number': ticket_number,
+                'ticket_code': ticket_code,
+                'purchase_datetime': purchase_datetime
+            })
+        else:
+            error_message = "Full name is required."
+            return render(request, 'buy_tickets.html', {'error_message': error_message})
     else:
-      error_message = "Full name is required."
-      return redirect('buy_tickets.html', {'error_message': error_message})
-  else:
-    error_message = "Invalid request method."
-    return render(request, 'buy_tickets.html', {'error_message': error_message})
+        error_message = "Invalid request method."
+        return render(request, 'buy_tickets.html', {'error_message': error_message})
 
 
 @require_POST
