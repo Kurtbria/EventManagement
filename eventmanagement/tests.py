@@ -25,6 +25,28 @@ class SignupViewTest(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertFalse(User.objects.filter(username='testuser').exists())
 
+    def test_signup_post_password_mismatch(self):
+        response = self.client.post(reverse('user_signup'), {
+            'username': 'testuser',
+            'email': 'test@example.com',
+            'password': 'testpassword',
+            'confirm_password': 'mismatchpassword'
+        })
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse(User.objects.filter(username='testuse').exists())
+
+    def test_signup_post_existing_username(self):
+        User.objects.create_user(username='existinguser', email='existing@example.com', password='existingpassword')
+        response = self.client.post(reverse('user_signup'), {
+            'username': 'existinguser',
+            'email': 'test@example.com',
+            'password': 'testpassword',
+            'confirm_password': 'testpassword'
+        })
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse(User.objects.filter(username='testuser').exists())
+
+
 class GenerateTicketViewTest(TestCase):
     def setUp(self):
         self.client = Client()
