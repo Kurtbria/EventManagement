@@ -7,16 +7,173 @@
     <title>Event Management System</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link rel="icon" type="image/x-icon" href="{% static '/images/favicon.ico.jpg' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0 15px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        .hero {
+            background: url("{% static 'images/hero-bg.jpg' %}") no-repeat center center/cover;
+            color: white;
+            text-align: center;
+            padding: 100px 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .btn:hover {
+            background-color: #218838;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #333;
+            color: white;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+
+        .profile-section {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-picture {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-image: url("{% static 'images/default-profile.png' %}");
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+        }
+
+        .profile-dropdown {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background-color: white;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            width: 200px;
+        }
+
+        .profile-dropdown a,
+        .profile-dropdown form {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.3s ease;
+        }
+
+        .profile-dropdown a:hover,
+        .profile-dropdown form:hover {
+            background-color: #f1f1f1;
+        }
+
+        .profile-dropdown form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .profile-dropdown form input[type="file"] {
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        .profile-dropdown form button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .profile-dropdown form button:hover {
+            background-color: #0056b3;
+        }
+
+        .profile-section:hover .profile-dropdown {
+            display: block;
+        }
+
+        .profile-dropdown::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            border-width: 10px;
+            border-style: solid;
+            border-color: transparent transparent white transparent;
+        }
+    </style>
 </head>
 <body>
     <header>
         <nav>
-            <a href="/">Home</a>
-            <a href="list_events">Events</a>
-            <a href="user_signin">Signin</a>
-            <a href="user_signup">Signup</a>
-            <a href="signout">Signout</a>
-            <a href="user_privilage">Check Privilage</a>
+            <div>
+                <a href="/">Home</a>
+                <a href="list_events">Events</a>
+                <a href="user_signin">Signin</a>
+                <a href="user_signup">Signup</a>
+                <a href="signout">Signout</a>
+                <a href="user_privilage">Check Privilage</a>
+            </div>
+            
+            <div class="profile-section">
+                <div class="profile-picture"></div>
+                <div class="profile-dropdown">
+                    <a href="#" id="profileButton">Profile</a>
+                    <form id="profileForm" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="file" name="profile_picture" accept="image/*">
+                        <button type="submit">Upload</button>
+                    </form>
+                    <a href="#">Profile Info</a>
+                </div>
+            </div>
         </nav>
     </header>
 
@@ -31,5 +188,12 @@
     <footer>
         <p>&copy; 2024 Event Management System. All rights reserved.</p>
     </footer>
+
+    <script>
+        document.getElementById('profileButton').addEventListener('click', function(event) {
+            event.preventDefault();
+            document.getElementById('profileForm').style.display = 'block';
+        });
+    </script>
 </body>
 </html>

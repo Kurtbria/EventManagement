@@ -30,10 +30,6 @@ def home(request):
     print(request.user)
     return render(request, 'base.html')
 
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.models import User
-
 @csrf_exempt
 def user_signup(request):
     if request.method == 'POST':
@@ -202,9 +198,7 @@ def generate_ticket(request):
         error_message = "Invalid request method."
         return render(request, 'buy_tickets.html', {'error_message': error_message})
 
-
 @require_POST
-@login_required
 @csrf_exempt
 def create_paypal_payment(request):
   paypal_api_url = 'https://api-m.sandbox.paypal.com/v1/payments/payment'
