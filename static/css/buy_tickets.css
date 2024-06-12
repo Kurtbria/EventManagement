@@ -18,7 +18,7 @@ form {
 
 .form-group {
     margin-bottom: 20px;
-    opacity: 0.8; /* Adjust opacity as needed */
+    opacity: 0.8; 
     transition: all 0.3s ease;
 }
 
@@ -38,14 +38,14 @@ select {
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 16px;
-    background-color: rgba(255, 255, 255, 0.5); /* Semi-transparent background */
+    background-color: rgba(255, 255, 255, 0.5); 
     transition: all 0.3s ease;
 }
 
 button[type="submit"] {
     width: 100%;
     padding: 10px;
-    background-color: #333;
+    background-color: #28a745;
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -55,14 +55,14 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-    background-color: #333;
+    background-color: #28a745;
 }
 
 .payment-option {
     flex-grow: 1;
     padding: 10px;
-    background-color: #333;
-    color: #333;
+    background-color: #28a745;
+    color: #28a745;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -71,5 +71,5 @@ button[type="submit"]:hover {
 }
 
 .payment-option:hover {
-    background-color: #333;
+    background-color: #28a745;
 }
