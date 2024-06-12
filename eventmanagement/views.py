@@ -53,11 +53,10 @@ def user_signup(request):
         
         user = User.objects.create_user(username=username, email=email, password=password)
         user.save()
+        
+        send_welcome_email(email)  
+        
         return JsonResponse({'success': True}, status=200)
-
-        send_welcome_email(email)
-
-
 
     return render(request, 'signup.html')
 

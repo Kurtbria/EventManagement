@@ -6,7 +6,7 @@ body {
 }
 
 header {
-  background-color: #333;
+  background-color: #218838;
   color: #fff;
   padding: 1rem 2rem;
   text-align: center;
@@ -52,7 +52,7 @@ h1 {
 .event-date,
 .event-organizer {
   font-weight: bold;
-  color: #333;
+  color: #218838;
 }
 
 .event a {

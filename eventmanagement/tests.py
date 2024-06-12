@@ -1,6 +1,8 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
+from django.core import mail
+from .utils import send_welcome_email
 
 class SignupViewTest(TestCase):
     def setUp(self):
@@ -82,3 +84,14 @@ class GenerateTicketViewTest(TestCase):
         self.assertEqual(response.context['email'], 'test@example.com')
         self.assertTrue(response.context['ticket_number'])
         self.assertTrue(response.context['ticket_code'])
+
+class EmailTestCase(TestCase):
+    def test_welcome_email_sent(self):
+        send_welcome_email('#')
+
+        self.assertEqual(len(mail.outbox), 1)
+
+        self.assertEqual(mail.outbox[0].subject, 'Welcome to EMS!!')
+        self.assertInHTML('<h1>Welcome to EMS!!<h1>', mail.outbox[0].body)
+        self.assertEqual(mail.outbox[0].from_email, '#')
+        self.assertEqual(mail.outbox[0].to[0], '#')
