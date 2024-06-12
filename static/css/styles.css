@@ -1,34 +1,120 @@
-
 body, html {
   margin: 0;
   padding: 0;
-  font-family: Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
+  height: 100%;
+  overflow-x: hidden;
 }
 
-
 header {
-  background-color: #333;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background: transparent;
   color: #fff;
   padding: 10px 20px;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 nav a {
   color: #fff;
   text-decoration: none;
-  margin-right: 20px;
+  margin: 0 15px;
+  font-size: 16px;
+  font-weight: 500;
 }
 
+nav a:hover {
+  color: #007bff;
+}
+
+.profile-container {
+  position: relative;
+}
+
+.profile-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 200px;
+  z-index: 1000;
+}
+
+.dropdown-menu a, .dropdown-menu form {
+  display: block;
+  padding: 10px;
+  color: #333;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.dropdown-menu a:hover {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.dropdown-menu form {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown-menu label.upload-label {
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #333;
+}
+
+.dropdown-menu input[type="file"] {
+  margin-bottom: 10px;
+}
+
+.dropdown-menu .btn-upload {
+  background-color: #007bff;
+  color: #fff;
+  padding: 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.dropdown-menu .btn-upload:hover {
+  background-color: #0056b3;
+}
+
+.show {
+  display: block;
+}
 
 .hero {
-  background-image: url('https://i.guim.co.uk/img/media/2c46e39976255f76724f6af1aae317defb9c5644/0_137_4285_2571/master/4285.jpg?width=1900&dpr=1&s=none');
+  background-image: url('https://wallpapercave.com/wp/wp8930901.jpg');
   background-size: cover;
   background-position: center;
-  height: 80vh;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   color: #fff;
+  margin-top: 0;
+  padding-top: 0px;
 }
 
 .hero-content {
@@ -49,7 +135,7 @@ nav a {
 
 .btn {
   padding: 10px 20px;
-  background-color: #716fe9;
+  background-color: #28a745;
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -59,7 +145,7 @@ nav a {
 }
 
 .btn:hover {
-  background-color: #300d8f;
+  background-color: #218838;
 }
 
 footer {
