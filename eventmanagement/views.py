@@ -22,6 +22,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.conf import settings
+from .utils import send_welcome_email
 from .forms import ProfilePictureForm
 from django.contrib.auth.forms import PasswordChangeForm
 from django.http import HttpResponseBadRequest, HttpResponseRedirect, JsonResponse, HttpResponse
@@ -53,6 +54,11 @@ def user_signup(request):
         user = User.objects.create_user(username=username, email=email, password=password)
         user.save()
         return JsonResponse({'success': True}, status=200)
+
+        send_welcome_email(email)
+
+
+
     return render(request, 'signup.html')
 
     

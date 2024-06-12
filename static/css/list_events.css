@@ -58,7 +58,7 @@ h1 {
 .event a {
   display: inline-block;
   padding: 0.5rem 1rem;
-  background-color: #333;
+  background-color: #28a745;
   color: #fff;
   text-decoration: none;
   border-radius: 5px;
@@ -66,11 +66,11 @@ h1 {
 }
 
 .event a:hover {
-  background-color: #222;
+  background-color: #28a745;
 }
 
 footer {
-  background-color: #333;
+  background-color: #28a745;
   color: #fff;
   padding: 1rem 2rem;
   text-align: center;
