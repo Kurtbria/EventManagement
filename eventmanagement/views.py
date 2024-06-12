@@ -16,6 +16,7 @@ from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.utils import timezone
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, auth
+from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
