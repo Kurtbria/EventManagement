@@ -6,6 +6,9 @@ import io, re, os
 import datetime
 import base64
 from .forms import *
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from reportlab.lib.utils import ImageReader
 from django.views.generic import View
 from PIL import Image, ImageDraw, ImageFont
 from django.contrib.auth.forms import UserCreationForm
@@ -14,6 +17,7 @@ from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 #from .paypal_client import PayPalClient
 from django.utils import timezone
+from io import BytesIO
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, auth
 from django.contrib.auth import update_session_auth_hash
@@ -232,6 +236,39 @@ def generate_ticket(request):
         error_message = "Invalid request method."
         return render(request, 'buy_tickets.html', {'error_message': error_message})
 
+def download_ticket(request):
+    buffer = BytesIO()
+
+    p = canvas.Canvas(buffer, pagesize=letter)
+    width, height = letter
+
+    background = ImageReader('path/to/static/images/background.jpg')
+    p.drawImage(background, 0, 0, width=width, height=height)
+
+    event_image = ImageReader('path/to/static/images/event-image.jpg')
+    p.drawImage(event_image, 50, height - 150, width=100, height=100)
+
+    p.setFont("Helvetica", 14)
+    p.drawString(200, height - 50, f"Congratulations, {request.user.full_name}!")
+    p.setFont("Helvetica", 12)
+    p.drawString(200, height - 70, f"Your ticket details:")
+    p.drawString(200, height - 90, f"- Email: {request.user.email}")
+    p.drawString(200, height - 110, f"- Ticket Number: {request.user.ticket_number}")
+    p.drawString(200, height - 130, f"- Code: {request.user.ticket_code}")
+    p.drawString(200, height - 150, f"Event: Example Event")
+    p.drawString(200, height - 170, f"Date and Time of Purchase: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+
+    p.showPage()
+    p.save()
+
+    pdf = buffer.getvalue()
+    buffer.close()
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="ticket.pdf"'
+    response.write(pdf)
+    return response
+
+
 @require_POST
 @csrf_exempt
 def create_paypal_payment(request):
@@ -295,7 +332,6 @@ def email_pattern(email):
     
     if not re.match(email_pattern, email):
         return False
-
     if email.endswith('@gmail.com') or email.endswith('@googlemail.com'):
         return True
     else:
@@ -359,7 +395,7 @@ def stripe_checkout(request):
                         'product_data': {
                             'name': 'Virtual Ticket',
                         },
-                        'unit_amount': 100,  # Amount in cents
+                        'unit_amount': 100, 
                     },
                     'quantity': 1,
                 }],

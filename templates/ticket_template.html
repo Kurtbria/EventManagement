@@ -1,13 +1,14 @@
+{%  load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ticket</title>
-    <link rel="icon" type="x-icon" href="{% static 'images/favion.ico.jpg'}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favion.ico.jpg' %}">
     <style>
         body {
-            background-image: url('https://simplynoted.com/cdn/shop/articles/050eef32fe16075ac9a3310a1d310593_1200x1200.jpg?v=1652231425'); /* Path to your background image */
+            background-image: url('{% static "images/background.jpg" %}');
             background-size: cover;
             background-repeat: no-repeat;
             background-attachment: fixed;
@@ -83,7 +84,7 @@
 <body>
     <div class="container">
         <div class="ticket">
-            <img src="https://media.istockphoto.com/id/1125716911/vector/party-popper-with-confetti.jpg?s=612x612&w=0&k=20&c=sAyofM-MQ5TL-pLyFseV9Vke_W2zyYX1btP90oGJQZE=" alt="Event Image" class="ticket-image"> <!-- Path to your event image -->
+            <img src="{% static 'images/event-image.jpg' %}" alt="Event Image" class="ticket-image">
             <div class="ticket-content">
                 <h2>Congratulations, {{ full_name }}!</h2>
                 <p>Your ticket details:</p>
@@ -99,7 +100,7 @@
 
     <script>
         function downloadTicket() {
-            fetch('/generate_ticket/')
+            fetch('/download_ticket/')
                 .then(response => response.blob())
                 .then(blob => {
                     const url = window.URL.createObjectURL(blob);
